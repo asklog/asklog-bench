@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kimi K3.1 UI challenges</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07070a; --bg2:#0d0d12; --card:#111117; --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
+  --fg:#f5f5f7; --mut:#9a9aa8; --dim:#62626e; --lime:#c6ff3d; --warn:#ffb43d; --bad:#ff5c6c;
+  --sans:"Inter Tight",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --serif:"Instrument Serif",ui-serif,Georgia,serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;background:#07070a}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(60vw 40vw at 85% -10%,rgba(198,255,61,.10),transparent 60%),radial-gradient(50vw 40vw at -10% 10%,rgba(122,240,255,.07),transparent 60%)}
+main{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 32px 140px}
+a{color:inherit}
+.mono{font-family:var(--mono)}
+.kicker{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+
+/* hero */
+header{padding:72px 0 40px}
+.badge{display:inline-flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border:1px solid var(--line2);border-radius:999px;font:500 13px/1 var(--mono);color:var(--mut);background:rgba(255,255,255,.02)}
+.badge i{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px var(--lime);animation:blink 2s infinite}
+@keyframes blink{50%{opacity:.35}}
+h1{font-weight:900;font-size:clamp(46px,9.4vw,132px);line-height:.9;letter-spacing:-.045em;margin:28px 0 0;text-wrap:balance}
+h1 em{font-family:var(--serif);font-weight:400;font-style:italic;letter-spacing:-.02em;color:var(--lime)}
+.lede{max-width:640px;margin:28px 0 0;font-size:clamp(17px,1.6vw,20px);color:var(--mut);text-wrap:pretty}
+.lede b{color:var(--fg);font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:44px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--line)}
+.stat{background:var(--bg2);padding:18px 20px}
+.stat b{display:block;font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.stat span{font:500 12px/1.3 var(--mono);color:var(--mut);letter-spacing:.04em}
+
+section{margin-top:72px}
+.sec-h{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+h2{font-size:clamp(30px,4.6vw,54px);font-weight:800;letter-spacing:-.035em;line-height:1;margin:10px 0 0}
+h2 em{font-family:var(--serif);font-weight:400;font-style:italic}
+.sec-h p{margin:0;max-width:440px;color:var(--mut);font-size:15px}
+
+/* budget */
+.budget{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}
+.panel{border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01));padding:24px}
+.run{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.run li{display:grid;grid-template-columns:34px 1fr auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(0,0,0,.25)}
+.run .n{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font:700 14px/1 var(--mono);color:#000;background:var(--a)}
+.run h4{margin:0;font-size:16px;font-weight:700;letter-spacing:-.01em}
+.run h4 small{font:500 11px/1 var(--mono);color:var(--mut);letter-spacing:.08em;text-transform:uppercase;margin-left:8px;white-space:nowrap}
+.run p{margin:2px 0 0;font-size:13px;color:var(--mut)}
+.run .cost{font:600 15px/1.2 var(--mono);text-align:right;white-space:nowrap}
+.run .cost small{display:block;font-size:11px;color:var(--dim);font-weight:400}
+.run li.opt{border-style:dashed}
+.run-total{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1px solid var(--line);font:500 13px/1.5 var(--mono);color:var(--mut)}
+.run-total b{color:var(--fg)}
+.btn{text-decoration:none;appearance:none;border:0;cursor:pointer;font:700 14px/1 var(--sans);letter-spacing:-.005em;border-radius:12px;padding:13px 18px;display:inline-flex;align-items:center;gap:8px;transition:transform .15s,background .2s,color .2s,box-shadow .2s}
+.btn:active{transform:scale(.97)}
+.btn-lime{background:var(--lime);color:#0a0a0a;box-shadow:0 8px 30px -10px rgba(198,255,61,.6)}
+.btn-lime:hover{box-shadow:0 10px 36px -8px rgba(198,255,61,.85)}
+.btn-ghost{background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--line2)}
+.btn-ghost:hover{background:rgba(255,255,255,.1)}
+.meter-big{font-weight:900;font-size:clamp(44px,6vw,68px);letter-spacing:-.04em;line-height:1}
+.meter-big small{font-size:.38em;color:var(--mut);font-weight:600;letter-spacing:-.01em}
+.bar{position:relative;height:14px;border-radius:99px;background:rgba(255,255,255,.06);margin:22px 0 8px;overflow:visible}
+.bar .fill{position:absolute;inset:0 auto 0 0;border-radius:99px;background:linear-gradient(90deg,#7af0ff,var(--lime));transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.bar .fill.hot{background:linear-gradient(90deg,var(--warn),var(--bad))}
+.bar .stop{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--bad);left:calc(11/12*100%)}
+.bar .stop::after{content:"stop $11";position:absolute;top:-18px;left:4px;font:600 10px/1 var(--mono);color:var(--bad);white-space:nowrap}
+.bar .stop.cap{left:calc(10/12*100%);background:var(--warn)}
+.bar .stop.cap::after{content:"key cap $10";top:auto;bottom:-18px;left:auto;right:4px;color:var(--warn)}
+.bar-scale{display:flex;justify-content:space-between;font:500 11px/1 var(--mono);color:var(--dim)}
+.spend-rows{margin:18px 0 0;padding:0;list-style:none;font:500 13px/1.4 var(--mono)}
+.spend-rows li{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid var(--line);color:var(--mut)}
+.spend-rows li b{color:var(--fg);font-weight:600}
+.status-pill{display:inline-flex;align-items:center;gap:8px;font:600 12px/1 var(--mono);padding:7px 10px;border-radius:99px;background:rgba(198,255,61,.12);color:var(--lime);margin-top:14px}
+.status-pill.stop{background:rgba(255,92,108,.14);color:var(--bad)}
+.rules-note{font-size:13px;color:var(--mut);margin:16px 0 0}
+
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.card{position:relative;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:24px;background:var(--card);overflow:hidden;transition:border-color .25s,transform .25s,box-shadow .25s}
+.card:hover{border-color:color-mix(in srgb,var(--a) 40%,transparent);box-shadow:0 30px 80px -40px color-mix(in srgb,var(--a) 45%,transparent)}
+.card.picked{border-color:var(--a);box-shadow:0 0 0 1px var(--a),0 30px 80px -40px color-mix(in srgb,var(--a) 70%,transparent)}
+.card.rec::after{content:"In budget run";position:absolute;top:14px;right:14px;z-index:5;font:700 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:7px 9px;border-radius:8px;background:rgba(0,0,0,.6);color:var(--lime);border:1px solid rgba(198,255,61,.35);backdrop-filter:blur(8px)}
+.teaser{position:relative;aspect-ratio:16/10;overflow:hidden;background:#000;container-type:inline-size;isolation:isolate}
+.teaser canvas{display:block;width:100%;height:100%}
+.body{padding:22px 24px 24px;display:flex;flex-direction:column;gap:16px;flex:1}
+.meta{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.idx{font:600 12px/1 var(--mono);color:var(--a);letter-spacing:.1em}
+.diff{display:flex;align-items:center;gap:8px;font:600 11px/1 var(--mono);color:var(--mut);letter-spacing:.08em;text-transform:uppercase}
+.pips{display:flex;gap:3px}
+.pips i{width:14px;height:6px;border-radius:2px;background:rgba(255,255,255,.1)}
+.pips i.on{background:var(--a);box-shadow:0 0 8px color-mix(in srgb,var(--a) 60%,transparent)}
+.card h3{margin:0;font-size:clamp(24px,2.6vw,30px);font-weight:800;letter-spacing:-.03em;line-height:1.05}
+.pitch{margin:-6px 0 0;color:var(--mut);font-size:15px;text-wrap:pretty}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags span{font:500 12px/1 var(--sans);padding:7px 10px;border-radius:99px;border:1px solid var(--line2);color:#d6d6de;background:rgba(255,255,255,.02)}
+.wow{border-left:2px solid var(--a);padding:2px 0 2px 14px;font-size:14px;color:#d9d9e0}
+.wow b{display:block;font:600 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--a);margin-bottom:6px}
+.pbox{border:1px solid var(--line2);border-radius:16px;background:rgba(0,0,0,.3);overflow:hidden}
+.pbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 10px 10px 16px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.025)}
+.pbar > span{font:600 12px/1.2 var(--mono);color:var(--mut);letter-spacing:.06em;text-transform:uppercase}
+.pbar > span small{font-size:11px;color:var(--dim);letter-spacing:0;text-transform:none;margin-left:6px}
+.prompt{position:relative}
+.prompt p{margin:0;padding:14px 16px 18px;font:400 12.5px/1.7 var(--mono);color:#c8c8d2;white-space:pre-wrap;word-break:break-word;max-height:240px;overflow:auto;user-select:text}
+.prompt p .rule{color:var(--dim)}
+.copy{background:var(--a);color:#08080a;padding:12px 18px;font-size:15px;box-shadow:0 10px 30px -12px var(--a);min-width:150px;justify-content:center}
+.copy:hover{filter:brightness(1.08)}
+.copy.done{background:#fff;color:#08080a}
+.copy svg{width:16px;height:16px}
+.foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:4px}
+.foot .slug{font:500 12px/1.4 var(--mono);color:var(--dim)}
+.foot .slug b{color:var(--mut);font-weight:600}
+.pick{background:transparent;color:var(--mut);box-shadow:inset 0 0 0 1px var(--line2);padding:10px 14px;font-size:13px}
+.pick:hover{color:var(--fg);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+.card.picked .pick{color:var(--a);box-shadow:inset 0 0 0 1.5px var(--a)}
+
+/* rubric */
+.rubric{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.rb{border:1px solid var(--line);border-radius:18px;padding:20px;background:var(--bg2)}
+.rb .w{font:700 32px/1 var(--sans);letter-spacing:-.03em}
+.rb .w small{font:600 12px/1 var(--mono);color:var(--mut);margin-left:4px}
+.rb h4{margin:12px 0 10px;font-size:18px;letter-spacing:-.015em}
+.rb dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 10px;font-size:13px;color:var(--mut)}
+.rb dt{font:700 11px/1.6 var(--mono);color:var(--dim)}
+.rb dt.hi{color:var(--lime)}
+.rb dd{margin:0}
+.formula{margin-top:16px;padding:16px 18px;border-radius:14px;border:1px dashed var(--line2);font:500 13px/1.6 var(--mono);color:var(--mut)}
+.formula b{color:var(--fg)}
+.rules{border:1px solid var(--line);border-radius:18px;padding:20px 22px;background:var(--bg2);font:400 13px/1.7 var(--mono);color:#c8c8d2}
+footer{margin-top:72px;color:var(--dim);font:500 12px/1.6 var(--mono)}
+
+/* tray */
+.tray{position:fixed;left:50%;bottom:20px;transform:translate(-50%,140%);z-index:50;display:flex;align-items:center;gap:14px;padding:10px 10px 10px 18px;border-radius:18px;background:rgba(18,18,24,.82);border:1px solid var(--line2);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);box-shadow:0 20px 60px -20px rgba(0,0,0,.8);transition:transform .45s cubic-bezier(.2,.9,.25,1.2);max-width:calc(100vw - 32px)}
+.tray.show{transform:translate(-50%,0)}
+.tray .t{font:600 14px/1.3 var(--sans);min-width:0}
+.tray .t small{display:block;font:500 12px/1.3 var(--mono);color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw}
+.toast{position:fixed;top:20px;left:50%;transform:translate(-50%,-160%);z-index:60;padding:12px 16px;border-radius:12px;background:#1a1a22;border:1px solid var(--line2);font:500 13px/1.4 var(--sans);transition:transform .35s cubic-bezier(.2,.9,.25,1.2);max-width:calc(100vw - 32px)}
+.toast.show{transform:translate(-50%,0)}
+
+/* ---------- teasers ---------- */
+/* keyboard */
+.kb{position:absolute;inset:0;background:radial-gradient(80% 90% at 50% 40%,#1b1f14,#050605);perspective:1100px;display:grid;place-items:center}
+.kb-board{--case:#1c1d20;--cap:#e9e6dc;--capd:#b4b0a3;--acc:#c6ff3d;--accd:#7fa61f;--glow:#c6ff3d;
+  transform:rotateX(54deg) rotateZ(-26deg) translateY(-4cqw);transform-style:preserve-3d;padding:2.2cqw;border-radius:2.2cqw;background:var(--case);
+  box-shadow:0 1.6cqw 0 color-mix(in srgb,var(--case) 60%,#000),0 3cqw 6cqw -1cqw color-mix(in srgb,var(--glow) 55%,transparent),0 0 0 .2cqw rgba(255,255,255,.06) inset;
+  display:grid;grid-template-columns:repeat(15,4.1cqw);grid-auto-rows:4.1cqw;gap:.55cqw;transition:background .6s,box-shadow .6s}
+.key{grid-column:span var(--w,1);border-radius:.8cqw;background:var(--cap);box-shadow:0 .7cqw 0 var(--capd),inset 0 -.25cqw 0 rgba(0,0,0,.08),inset 0 .25cqw .2cqw rgba(255,255,255,.5);
+  transition:transform .07s,box-shadow .07s,background .45s var(--d,0s),filter .2s;position:relative}
+.key.acc{background:var(--acc);box-shadow:0 .7cqw 0 var(--accd),inset 0 .25cqw .2cqw rgba(255,255,255,.4)}
+.key.dn{transform:translateY(.55cqw);box-shadow:0 .15cqw 0 var(--capd),0 0 2.2cqw var(--glow);filter:brightness(1.08)}
+.key.acc.dn{box-shadow:0 .15cqw 0 var(--accd),0 0 2.2cqw var(--glow)}
+.swatches{position:absolute;left:16px;bottom:14px;display:flex;gap:8px;z-index:3}
+.swatches button{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,.2);cursor:pointer;padding:0;transition:transform .2s,border-color .2s}
+.swatches button.on{border-color:#fff;transform:scale(1.12)}
+.teaser .label{position:absolute;right:16px;bottom:14px;z-index:3;font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.7);padding:7px 9px;border-radius:8px;background:rgba(0,0,0,.45);backdrop-filter:blur(6px)}
+.teaser .hint{position:absolute;left:16px;top:14px;z-index:3;font:600 11px/1 var(--mono);letter-spacing:.08em;color:rgba(255,255,255,.65)}
+/* aurora fallback + overlay */
+.aur-type{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 7cqw;pointer-events:none;z-index:2;mix-blend-mode:screen}
+.aur-type b{font-weight:900;font-size:11cqw;line-height:.85;letter-spacing:-.05em;color:#fff}
+.aur-type span{font:600 1.7cqw/1 var(--mono);letter-spacing:.3em;color:rgba(255,255,255,.75);margin-top:2.4cqw}
+/* glass player */
+.gp{position:absolute;inset:0;background:#0b0618;overflow:hidden;display:grid;place-items:center}
+.gp .blob{position:absolute;width:55cqw;height:55cqw;border-radius:50%;filter:blur(5cqw);opacity:.85}
+.gp .b1{background:#7b3dff;left:-8cqw;top:-18cqw;animation:drift1 9s ease-in-out infinite alternate}
+.gp .b2{background:#ff3d9a;right:-12cqw;bottom:-26cqw;animation:drift2 11s ease-in-out infinite alternate}
+.gp .b3{background:#2ee6d6;left:32cqw;top:10cqw;width:30cqw;height:30cqw;opacity:.55;animation:drift1 7s ease-in-out infinite alternate-reverse}
+@keyframes drift1{to{transform:translate(14cqw,10cqw) scale(1.15)}}
+@keyframes drift2{to{transform:translate(-16cqw,-8cqw) scale(.9)}}
+.gp-card{position:relative;width:64cqw;padding:3cqw;border-radius:3.4cqw;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(22px) saturate(1.6);-webkit-backdrop-filter:blur(22px) saturate(1.6);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 4cqw 8cqw -3cqw rgba(0,0,0,.6);display:grid;grid-template-columns:18cqw 1fr;gap:3cqw;align-items:center}
+.gp-art{width:18cqw;height:18cqw;border-radius:50%;background:conic-gradient(from 0deg,#ff3d9a,#7b3dff,#2ee6d6,#ffd23d,#ff3d9a);animation:spin 12s linear infinite;box-shadow:0 2cqw 4cqw -1cqw rgba(255,61,154,.6);position:relative}
+.gp-art::after{content:"";position:absolute;inset:34%;border-radius:50%;background:rgba(10,6,24,.85);box-shadow:0 0 0 .6cqw rgba(255,255,255,.15)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gp-t{font-weight:800;font-size:3.4cqw;letter-spacing:-.02em;line-height:1.1;color:#fff}
+.gp-s{font:500 1.7cqw/1.2 var(--mono);color:rgba(255,255,255,.65);margin-top:.6cqw}
+.gp-bars{display:flex;align-items:end;gap:.45cqw;height:7cqw;margin:2cqw 0 1.6cqw}
+.gp-bars i{flex:1;border-radius:.4cqw;background:linear-gradient(#fff,rgba(255,255,255,.35));height:100%;transform-origin:bottom;animation:eq var(--t,.8s) ease-in-out var(--dl,0s) infinite alternate}
+@keyframes eq{from{transform:scaleY(.12)}to{transform:scaleY(1)}}
+.gp-prog{height:.6cqw;border-radius:1cqw;background:rgba(255,255,255,.18);overflow:hidden}
+.gp-prog i{display:block;height:100%;width:40%;background:#fff;border-radius:1cqw;animation:prog 14s linear infinite}
+@keyframes prog{from{width:2%}to{width:100%}}
+.gp-ctl{display:flex;align-items:center;gap:2.2cqw;margin-top:1.6cqw;color:#fff}
+.gp-ctl i{width:4.6cqw;height:4.6cqw;border-radius:50%;background:#fff;display:grid;place-items:center}
+.gp-ctl i::before{content:"";width:0;height:0;border-left:1.5cqw solid #0b0618;border-top:1cqw solid transparent;border-bottom:1cqw solid transparent;margin-left:.4cqw}
+.gp-ctl u{width:1.8cqw;height:1.8cqw;border-radius:.4cqw;background:rgba(255,255,255,.5);text-decoration:none}
+/* design canvas */
+.dc{position:absolute;inset:0;background:#18181c}
+.dc svg{width:100%;height:100%;display:block}
+.dc .chrome{position:absolute;top:0;left:0;right:0;height:8%;background:#232328;border-bottom:1px solid #2f2f36;display:flex;align-items:center;gap:1.2cqw;padding:0 2cqw}
+.dc .chrome i{width:2.2cqw;height:2.2cqw;border-radius:.5cqw;background:#3a3a42}
+.dc .chrome i.on{background:#ff5c8a}
+/* palette */
+.cp{position:absolute;inset:0;background:radial-gradient(90% 80% at 50% 0%,#1b1f3a,#07070c 70%);display:grid;place-items:center;font-family:var(--sans)}
+.cp-bg{position:absolute;inset:6cqw 6cqw auto;display:grid;gap:1.2cqw;opacity:.35}
+.cp-bg i{height:2.6cqw;border-radius:.6cqw;background:rgba(255,255,255,.07)}
+.cp-box{position:relative;width:70cqw;border-radius:2.4cqw;background:rgba(22,23,34,.92);border:1px solid rgba(255,255,255,.12);box-shadow:0 5cqw 10cqw -3cqw rgba(0,0,0,.8),0 0 0 .5cqw rgba(142,162,255,.06);overflow:hidden}
+.cp-in{display:flex;align-items:center;gap:1.4cqw;padding:2.2cqw 2.6cqw;border-bottom:1px solid rgba(255,255,255,.08);font-size:2.6cqw;color:#fff;min-height:7cqw}
+.cp-crumb{font:600 1.6cqw/1 var(--mono);padding:.8cqw 1.1cqw;border-radius:.7cqw;background:rgba(142,162,255,.18);color:#b9c4ff;display:none}
+.cp-crumb.on{display:inline-block}
+.cp-caret{width:.25cqw;height:3cqw;background:#8ea2ff;animation:blink 1s steps(1) infinite}
+.cp-ph{color:rgba(255,255,255,.35)}
+.cp-list{position:relative;padding:1.2cqw}
+.cp-sec{font:600 1.45cqw/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);padding:1.2cqw 1.4cqw .8cqw}
+.cp-hl{position:absolute;left:1.2cqw;right:1.2cqw;height:5.4cqw;border-radius:1.2cqw;background:rgba(142,162,255,.14);box-shadow:inset 0 0 0 1px rgba(142,162,255,.25);transition:top .16s cubic-bezier(.2,.8,.2,1),opacity .2s}
+.cp-it{position:relative;display:flex;align-items:center;gap:1.6cqw;height:5.4cqw;padding:0 1.4cqw;font-size:2.15cqw;color:rgba(255,255,255,.82)}
+.cp-it .ic{width:2.8cqw;height:2.8cqw;border-radius:.7cqw;background:var(--c,#444);flex:none}
+.cp-it mark{background:none;color:#fff;font-weight:700;text-decoration:underline;text-decoration-color:#8ea2ff;text-underline-offset:.4cqw}
+.cp-it kbd{margin-left:auto;font:600 1.5cqw/1 var(--mono);padding:.6cqw .9cqw;border-radius:.5cqw;background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.1)}
+.cp-flash{animation:flash .35s}
+@keyframes flash{30%{background:rgba(142,162,255,.4)}}
+/* editorial */
+.ed{position:absolute;inset:0;background:#f1ebdf;color:#1b1714;padding:4.2cqw 5cqw;display:grid;grid-template-columns:1fr 26cqw;gap:4cqw;overflow:hidden;font-family:var(--serif)}
+.ed .top{grid-column:1/-1;display:flex;justify-content:space-between;font:600 1.45cqw/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;border-bottom:.25cqw solid #1b1714;padding-bottom:1.2cqw;color:#1b1714}
+.ed h5{margin:0;font-weight:400;font-size:9.4cqw;line-height:.84;letter-spacing:-.035em}
+.ed h5 i{color:#b4421f}
+.ed .deck{font-style:italic;font-size:2.4cqw;line-height:1.2;margin:2cqw 0 0;max-width:42cqw;color:#4a3f36}
+.ed .cols{columns:2;column-gap:2.4cqw;font-family:Georgia,serif;font-size:1.45cqw;line-height:1.5;margin-top:2.2cqw;text-align:justify;hyphens:auto;color:#2c2622}
+.ed .cols::first-letter{float:left;font-family:var(--serif);font-size:6.4cqw;line-height:.8;padding:.4cqw .8cqw 0 0;color:#b4421f}
+.ed aside{position:relative;border-left:.25cqw solid #1b1714;padding-left:2.4cqw;display:flex;flex-direction:column;justify-content:space-between}
+.ed aside q{font-size:2.9cqw;padding-bottom:1cqw;line-height:1.02;letter-spacing:-.01em;display:block;quotes:"\201C" "\201D"}
+.ed aside q::before{content:open-quote;color:#b4421f;margin-left:-1.4cqw}
+.ed svg{width:100%;height:auto}
+.beam{transform-origin:50px 22px;animation:beam 5s ease-in-out infinite alternate}
+@keyframes beam{from{transform:rotate(-28deg)}to{transform:rotate(28deg)}}
+/* onboarding */
+.ob{position:absolute;inset:0;background:radial-gradient(70% 90% at 70% 30%,#2a1208,#090605 70%);display:flex;align-items:center;justify-content:center;gap:5cqw;overflow:hidden}
+.ob-phone{position:relative;height:88%;aspect-ratio:9/18.5;border-radius:5cqw;background:#120c0a;border:.5cqw solid #2a201c;box-shadow:0 4cqw 8cqw -2cqw rgba(0,0,0,.8),inset 0 0 0 .3cqw #000;overflow:hidden;display:flex;flex-direction:column;padding:4cqw 2.6cqw 2.6cqw}
+.ob-blob{width:17cqw;height:17cqw;margin:2cqw auto 0;background:linear-gradient(135deg,var(--c1),var(--c2));border-radius:42% 58% 63% 37%/45% 38% 62% 55%;animation:morph 6s ease-in-out infinite;transition:background .8s,transform .8s cubic-bezier(.3,1.5,.5,1);box-shadow:0 2cqw 5cqw -1cqw var(--c1)}
+@keyframes morph{25%{border-radius:58% 42% 35% 65%/55% 62% 38% 45%}50%{border-radius:35% 65% 55% 45%/62% 35% 65% 38%}75%{border-radius:62% 38% 45% 55%/38% 55% 45% 62%}}
+.ob-txt{position:relative;margin-top:auto;height:9cqw;overflow:hidden}
+.ob-txt div{position:absolute;inset:0;transition:transform .55s cubic-bezier(.2,.9,.2,1),opacity .4s}
+.ob-txt b{display:block;font-weight:800;font-size:2.5cqw;letter-spacing:-.02em;color:#fff;line-height:1.1}
+.ob-txt span{display:block;font-size:1.45cqw;color:rgba(255,255,255,.6);margin-top:.8cqw;line-height:1.3}
+.ob-dots{display:flex;gap:.8cqw;margin:2cqw 0}
+.ob-dots i{height:.8cqw;width:.8cqw;border-radius:1cqw;background:rgba(255,255,255,.2);transition:width .5s cubic-bezier(.3,1.4,.5,1),background .4s}
+.ob-dots i.on{width:3.6cqw;background:var(--c1)}
+.ob-btn{height:4.6cqw;border-radius:1.6cqw;background:var(--c1);display:grid;place-items:center;font-weight:700;font-size:1.7cqw;color:#140a06;transition:background .6s}
+.ob-side{display:grid;gap:1.4cqw}
+.ob-chip{font:600 1.6cqw/1 var(--sans);padding:1.3cqw 1.8cqw;border-radius:5cqw;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.75);background:rgba(255,255,255,.03);transition:all .4s cubic-bezier(.3,1.6,.5,1)}
+.ob-chip.on{background:#ff8a5c;color:#140a06;border-color:#ff8a5c;transform:scale(1.06)}
+/* trading overlay */
+.tr-head{position:absolute;left:16px;top:12px;z-index:2;font:600 12px/1.3 var(--mono);color:#e8e8ee}
+.tr-head b{display:block;font:800 22px/1.1 var(--sans);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.tr-head .up{color:#2ee6a0}.tr-head .dn{color:#ff5c6c}
+
+@media (max-width:980px){
+  .grid{grid-template-columns:1fr}
+  .budget{grid-template-columns:1fr}
+  .rubric{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:640px){
+  main{padding:0 16px 130px}
+  header{padding:40px 0 24px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat b{font-size:24px}
+  section{margin-top:56px}
+  .panel{padding:18px}
+  .run li{grid-template-columns:30px 1fr;gap:12px}
+  .run .n{width:30px;height:30px}
+  .run .cost{grid-column:2;text-align:left}
+  .run .cost small{display:inline;margin-left:6px}
+  .body{padding:18px 18px 20px}
+  .rubric{grid-template-columns:1fr}
+  .tray{left:16px;right:16px;transform:translateY(140%);bottom:16px}
+  .tray.show{transform:translateY(0)}
+  .tray .t small{max-width:52vw}
+  .swatches button{width:22px;height:22px}
+  .teaser .swatches ~ .label{display:none}
+  .pbar > span{white-space:nowrap}
+  .pbar > span small{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <span class="badge"><i></i>Model test bench · Kimi K3.1 Pro via OpenCode</span>
+  <h1>Ten ways to make a model <em>sweat</em> pixels.</h1>
+  <p class="lede">Ambitious single-file HTML apps, ordered from <b>wow-factor</b> to <b>quiet craft</b>. Each one stresses a different UI muscle and has a moment you can judge live on stream. Hit <b>Copy prompt</b> on a card and paste it into the OpenCode pane. Each prompt builds the whole app in one go.</p>
+  <div class="stats">
+    <div class="stat"><b>10</b><span>challenges</span></div>
+    <div class="stat"><b>1</b><span>index.html each</span></div>
+    <div class="stat"><b>0</b><span>build steps</span></div>
+    <div class="stat"><b>$12</b><span>hard budget</span></div>
+  </div>
+</header>
+
+<section id="budget">
+  <div class="sec-h">
+    <div><div class="kicker">00 · Budget plan</div><h2>Four apps, <em>under $10.</em></h2></div>
+    <p>$2/M input, $10/M output, and OpenCode resends context every step, so plan on $1-3 per app. Each prompt asks for one build pass plus at most one fix-up turn.</p>
+  </div>
+  <div class="budget">
+    <div class="panel">
+      <div class="kicker" style="margin-bottom:14px">Recommended run</div>
+      <ol class="run" id="run"></ol>
+      <div class="run-total"><span>Core three <b>~$6.50</b> · worst <b>~$9.00</b></span><span>#4 runs only if spend ≤ <b>$7.00</b></span></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+        <a class="btn btn-lime" href="#c-aurora-shader">Start with #1: copy its prompt ↓</a>
+        <button class="btn btn-ghost" id="pickRun" type="button">Pick the budget run (optional)</button>
+      </div>
+      <p class="rules-note">Order matters: the cheapest, most visual piece goes first so a bad result costs the least. The two difficulty-5 builds (keyboard, design canvas) are left out because they can cost $3-5 each.</p>
+    </div>
+    <div class="panel" id="spend">
+      <div class="kicker">Running spend on the OpenRouter key</div>
+      <div class="meter-big" style="margin-top:14px"><span id="spendNow">$0.00</span> <small>of $12 budget</small></div>
+      <div class="bar"><div class="fill" id="spendFill" style="width:0"></div><div class="stop cap"></div><div class="stop"></div></div>
+      <div class="bar-scale"><span>$0</span><span>$6</span><span>$12</span></div>
+      <div id="spendStatus" class="status-pill">Waiting for the first build</div>
+      <ul class="spend-rows" id="spendRows"></ul>
+      <p class="rules-note" id="spendChecked">Spend is read from the key's usage after each build finishes. No more prompts once it reaches $11.</p>
+      <p class="rules-note" style="color:var(--warn)">Heads-up: the OpenRouter key has a $10 hard limit, so OpenRouter cuts off at $10, before the $11 stop line. The plan is sized to stay under $10.</p>
+    </div>
+  </div>
+</section>
+
+<section id="challenges">
+  <div class="sec-h">
+    <div><div class="kicker">01-10 · The challenges</div><h2>Pick your <em>poison.</em></h2></div>
+    <p>Every teaser is live and built right here in plain CSS, SVG, canvas or WebGL. Some respond to clicks. The full prompt is on every card, exactly as Kimi will get it.</p>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section id="rubric">
+  <div class="sec-h">
+    <div><div class="kicker">Scoring</div><h2>The <em>rubric.</em></h2></div>
+    <p>Score each app 1-5 per row right after the build, before looking at the code. Use the same rubric for every model you test later.</p>
+  </div>
+  <div class="rubric" id="rb"></div>
+  <div class="formula"><b>Score</b> = Σ (row score × weight) → out of 5.0 &nbsp;·&nbsp; also log <b>turns used</b>, <b>wall-clock minutes</b> and <b>$ spent</b> for each build, so later models compete on cost as well as looks.</div>
+</section>
+
+<section id="rules">
+  <div class="sec-h">
+    <div><div class="kicker">Shared rules</div><h2>Added to <em>every</em> prompt.</h2></div>
+    <p>These hard requirements are appended to each prompt so every run is judged the same way.</p>
+  </div>
+  <div class="rules" id="rulesText"></div>
+</section>
+
+<footer>model-testing · .asklog/pages/ui-challenges.html · apps land in apps/&lt;slug&gt;/index.html</footer>
+</main>
+
+<div class="tray" id="tray"><div class="t"><span id="trayN">0 picked</span><small id="trayL"></small></div><button class="btn btn-lime" id="send" type="button">Send picks</button></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const RULES = slug => `Hard requirements: create the folder apps/${slug}/ and put everything in ONE self-contained file, apps/${slug}/index.html. No build step, no npm, no bundler, no other files. External JS/CSS libraries only via <script>/<link> tags from cdnjs.cloudflare.com, cdn.jsdelivr.net or unpkg.com; web fonts from Google Fonts are fine. No external images, 3D models or audio files: generate everything procedurally (SVG, canvas, WebGL, Web Audio). It must look premium and intentional, work from 360px phone width up to a large desktop with mouse, touch and keyboard, respect prefers-reduced-motion, run smoothly at 60fps on a laptop, and open straight from the file system with zero console errors. Work efficiently: plan briefly, then write the complete file in one go; do not scaffold, install packages or start servers. After writing, re-read the file once, fix any real bugs, and stop with a short summary of what you built and anything you cut.`;
+
+const CH = [
+ {slug:'keyboard-configurator', title:'Keyforge 3D configurator', a:'#c6ff3d', d:5, cost:'$3-5',
+  pitch:'A 75% mechanical keyboard in three.js that clacks when you type on your real one.',
+  tags:['three.js scene building','PBR materials + lighting','Web Audio synthesis','UI to 3D state sync'],
+  wow:'Type a sentence on your real keyboard and the 3D board clacks in sync, then switch colourway and watch the theme ripple across the keys.',
+  prompt:`Build "KEYFORGE", a 3D mechanical keyboard configurator in three.js. Procedurally model a 75% keyboard (no external models): a chamfered aluminium case, a plate, and ~84 individual sculpted keycaps with legends drawn to a canvas texture. Lighting: a soft studio setup with a generated environment map, contact shadow under the board, and an RGB underglow strip. A glassy, well-typeset side panel configures: case finish (black, silver, lavender, lime, each with distinct metalness/roughness), 5 named keycap colourways that animate key-by-key in a wave when switched, switch type (linear / tactile / clicky) each with its own synthesised Web Audio sound, and underglow colour. Pressing keys on the real keyboard depresses the matching 3D key with a spring and plays the switch sound; clicking 3D keys does the same. Orbit camera with damping plus 3 preset angles with tweened transitions. A price summary with an odometer number animation and an "Add to cart" success animation. On phones the panel becomes a bottom sheet.`},
+ {slug:'aurora-shader', title:'Aurora Signal shader landing', a:'#7af0ff', d:4, cost:'$1.5-2.5', rec:1, role:'Wow / visual',
+  pitch:'A GPU shader you can stir with your cursor, wrapped in a landing page.',
+  tags:['GLSL fragment shaders','Kinetic typography','Scroll choreography','Perf budgeting'],
+  wow:'Moving the mouse visibly stirs the aurora around the cursor, and scrolling morphs the whole colour world in one continuous motion.',
+  prompt:`Build a landing page for a fictional generative music label, "AURORA SIGNAL", whose background is a full-viewport WebGL fragment shader (raw WebGL2, no library needed). The shader renders a living aurora: domain-warped fbm noise, layered light ribbons, a 4-colour palette, film grain and a vignette. It reacts to the pointer (the field swirls and brightens around the cursor with smooth inertia; follows the finger on touch) and to scroll (flow speed and palette crossfade per section). Over the hero, oversized kinetic typography: the headline splits into characters that assemble on load with staggered spring easing and parallax slightly with the pointer. Below: a manifesto with lines revealed on scroll, three artist cards with a 3D tilt and glare on hover, a release timeline, and a footer CTA with a magnetic button. The shader stays fixed behind everything. Adapt render resolution to keep 60fps and pause when the tab is hidden.`},
+ {slug:'neon-breakout', title:'Prism Breaker', a:'#ff3df2', d:3, cost:'$1.5-2.5', rec:4, role:'Game (optional)',
+  pitch:'A brick-breaker where every ounce of game juice has its own on/off switch.',
+  tags:['Game loop','Game feel / juice','Particles + post FX','Procedural audio'],
+  wow:'Toggle all the juice off and then on again mid-game, and watch the same game go from flat to electric.',
+  prompt:`Build "PRISM BREAKER", a playable neon brick-breaker on canvas that shows off game juice. Core: paddle (mouse, touch drag, or arrow keys), ball, 3 hand-designed levels, multi-hit bricks, and 3 power-ups (multi-ball, wide paddle, slow-mo) that fall as glowing capsules. A "Juice" panel with a toggle for each effect, so the difference can be shown live: screen shake scaled to impact, hit-stop freeze frames, particle bursts in brick colours, ball squash-and-stretch with a motion trail, paddle recoil, bricks that flash white before shattering, a combo counter with rising pitch, a bloom/glow effect, and synthesised Web Audio sound effects. Include a polished title screen, pause, level-clear and game-over screens with an animated score count-up and a localStorage high score.`},
+ {slug:'physics-playground', title:'Gravity Garden', a:'#ffb43d', d:3, cost:'$1.5-2.5',
+  pitch:'A sandbox with bombs, magnets, ropes and soft bodies. Break things on stream.',
+  tags:['Physics engine integration','Tool UX','Canvas at scale','Touch input'],
+  wow:'Fire the domino preset in slow-mo, drop a bomb into a packed scene, then snap time back to full speed.',
+  prompt:`Build "GRAVITY GARDEN", a physics sandbox using matter.js from a CDN. A toolbar with icons and keyboard shortcuts: spawn circle / box / polygon, draw a freehand static platform, rope, soft body blob, bomb (radial impulse with a shockwave ring), magnet (attracts nearby bodies while held), drag-and-throw, and eraser. Controls: gravity direction and strength (including zero-g), time scale with slow-motion and pause/step. Render with a crafted look rather than matter.js debug wireframes: a cohesive palette, soft shadows, trails on fast bodies and impact particles. 4 one-click preset scenes (Newton's cradle, domino run, a tower to topple, a marble ramp), an FPS and body-count HUD, smooth with 300 bodies. All tools work with touch.`},
+ {slug:'glass-player', title:'Lumen glass music player', a:'#b18cff', d:4, cost:'$2-3',
+  pitch:'A frosted-glass player playing music it composes itself, visualised live.',
+  tags:['Web Audio synthesis + analysis','Glassmorphism depth','Audio-reactive motion','Transitions'],
+  wow:'Hit play and the glass, the background and the visualiser all breathe with the generated music.',
+  prompt:`Build "LUMEN", a glassmorphism music player whose music is generated live with Web Audio (no audio files): 3 procedural tracks in different moods (lo-fi, synthwave, ambient) built from oscillators, filters, noise drums and a simple step sequencer, so play/pause/seek/next really work. UI: a frosted-glass player card (backdrop-filter, layered translucency, inner highlights, coloured shadows) floating over slowly morphing gradient blobs coloured from each track's procedurally generated album art. An AnalyserNode drives a radial frequency ring around the art plus a smooth waveform, and a beat pulse on the background. Controls: scrubber with hover time preview, volume, shuffle/repeat, a like button with a particle burst, and a queue drawer that slides up. Track changes crossfade the art and the whole scene's colours. Keyboard shortcuts (space, arrows).`},
+ {slug:'design-canvas', title:'Framework design canvas', a:'#ff5c8a', d:5, cost:'$3-5',
+  pitch:'Infinite canvas, smart guides, distance labels and fake multiplayer. Figma in one file.',
+  tags:['Complex pointer interaction','Geometry + snapping maths','Pro-tool UI density','Undo/redo state'],
+  wow:'Drag a shape near others and watch snap guides and distance labels appear exactly like the real thing.',
+  prompt:`Build "FRAMEWORK", a Figma-like design tool. Infinite canvas with smooth pan (space+drag, trackpad) and zoom-to-cursor (pinch, ctrl+wheel) from 10% to 3200%, with a dot grid that adapts to zoom. Tools: select (V), frame (F), rectangle (R), ellipse (O), line (L), text (T, edited inline). Selection: click, shift-click, marquee, 8 resize handles (shift keeps ratio, alt resizes from centre), rotation, and smart snapping with magenta alignment guides and live distance labels like Figma. Left panel: layers list with drag reorder, rename, hide/lock. Right panel: x/y/w/h/rotation inputs, fill and stroke colour, corner radius, opacity. Undo/redo, duplicate (alt-drag), align buttons, group/ungroup, and export the selection to PNG and SVG. Simulate 2 collaborators with named coloured cursors that move naturally. Persist to localStorage. Dense, precise, Figma-grade chrome.`},
+ {slug:'trading-terminal', title:'Vector trading terminal', a:'#2ee6a0', d:4, cost:'$2-3', rec:3, role:'Data / layout',
+  pitch:'Every panel ticking at once: candles, depth, tape, P&L and draggable orders.',
+  tags:['High-frequency rendering','Information density','Data visualisation','Grid layout systems'],
+  wow:'The whole screen alive with ticks while you drag a limit-order line on the chart and watch it fill.',
+  prompt:`Build "VECTOR", a data-dense crypto trading terminal running on a realistic simulated market feed (random walk with volatility clustering, 5 symbols). Pro terminal layout: a scrolling ticker bar; a watchlist with sparklines and cells that flash on change; a main candlestick chart drawn on canvas with volume, a moving average, a crosshair with OHLC readout, zoom and pan, and 1m/5m/1h timeframes that re-aggregate; an order book with depth bars updating several times a second; a trades tape; an order entry panel (limit/market, size slider, validation) where placed orders appear as draggable lines on the chart and fill when price crosses; and a positions table with live P&L. Dark theme, tabular numerals, tight grid. On mobile, panels collapse into tabs. Everything stays smooth while updating.`},
+ {slug:'command-palette', title:'Orbit command palette', a:'#8ea2ff', d:4, cost:'$2-3', rec:2, role:'Interaction',
+  pitch:'A Linear-grade issue tracker you can drive entirely from Cmd+K.',
+  tags:['Keyboard UX','Fuzzy search','Micro-motion','State management'],
+  wow:'Drive the whole app without touching the mouse, with every action landing instantly and animating into place.',
+  prompt:`Build "ORBIT", a keyboard-first issue tracker at Linear/Raycast quality, centred on a world-class command palette. Seed ~40 realistic issues across 3 projects. Main view: a dense issue list grouped by status with priority icons, labels and generated avatars, with smooth reorder animations when things change. Command palette (Cmd/Ctrl+K): instant fuzzy search across issues, commands and people with matched characters highlighted, grouped sections, recents, kbd hint chips, a preview of the focused issue, and nested pages ("Change status", "Assign to" push a sub-list with a breadcrumb; Backspace goes back). Actions apply to the selected issues with animated updates and a toast with Undo. Single-key shortcuts (C create, S status, A assign, J/K move, X select) and a "?" cheat sheet. Tune every transition: palette scale+fade in under 150ms, a selection highlight that glides between rows, no layout jank.`},
+ {slug:'editorial-longread', title:'The Last Lighthouse Keepers', a:'#ffd9a8', d:3, cost:'$1.5-2.5',
+  pitch:'A magazine feature with real typographic craft and a sweeping lighthouse beam.',
+  tags:['Typographic craft','Grid systems','Long-form readability','SVG illustration'],
+  wow:'The opening spread, where scrolling sweeps the lighthouse beam across the headline, and how good the body text feels to read.',
+  prompt:`Build a long-form magazine feature, "The Last Lighthouse Keepers", as one editorial web page with print-magazine typography. Write ~1000 words of original copy. Use a refined type system (a high-contrast serif for display and body, a grotesk for UI, from Google Fonts) on a modular scale, with proper quotes, hanging punctuation, text-wrap balance/pretty, ligatures and old-style figures. Layout: a dramatic full-bleed opening spread with an SVG lighthouse whose beam sweeps across the headline on scroll, plus kicker, deck and byline; drop caps; multi-column sections on wide screens; pull quotes that break the grid; margin sidenotes on desktop that become tap-to-expand footnotes on mobile; one hand-crafted SVG chart (keepers per decade); and a closing ornament. Scroll-driven reveals (CSS scroll timelines with a JS fallback), a reading progress bar, and a reader settings popover (text size, light/sepia/dark).`},
+ {slug:'onboarding-flow', title:'Bloom onboarding flow', a:'#ff8a5c', d:2, cost:'$1-2',
+  pitch:'Six steps, one morphing blob, zero janky frames.',
+  tags:['Motion choreography','Form micro-interactions','Mobile gestures','Accessibility'],
+  wow:'Swipe back and forth and the blob, the progress bar and the content all move as one continuous piece.',
+  prompt:`Build the onboarding flow for a fictional habit app, "Bloom", as a polished mobile-first experience (centred in a phone-sized frame on desktop, full screen on phones). Six steps: welcome; pick goals (multi-select chips with a spring pop); set a daily time with a custom circular dial you drag; choose a reminder tone (preview sounds with Web Audio); create an account (inline validation: shake on error, a checkmark that draws on success, a password strength meter); and a finale with a confetti burst and a personalised summary card. One morphing blob illustration persists across all steps and changes shape and colour per step. Transitions: shared-element motion between steps, a directional slide that reverses when going back, a liquid progress indicator, swipe gestures on touch, and full keyboard support. Every button has press feedback.`},
+];
+
+const RUBRIC = [
+ {w:25,h:'Visual polish',lo:'Default-looking, uneven spacing, clashing colour',hi:'Looks shipped by a top studio; type, spacing and colour are deliberate'},
+ {w:20,h:'Motion',lo:'None, or janky linear tweens',hi:'Choreographed, physical easing, 60fps, nothing gratuitous'},
+ {w:20,h:'Interaction depth',lo:'Static mock, buttons do nothing',hi:'Every promised feature works, with edge cases and keyboard support'},
+ {w:15,h:'Responsiveness',lo:'Breaks or overflows at phone width',hi:'Rethought for phones (sheets, tabs, touch), not just squeezed'},
+ {w:10,h:'Code quality',lo:'Console errors, dead code, one giant tangle',hi:'Clean structure, no errors, sensible state, cleans up its loops'},
+ {w:10,h:'Speed / cost',lo:'Many fix-up turns, $3+ per app',hi:'Works in one shot, under $1.50, fast wall-clock'},
+];
+
+/* Spend state: updated by Chief after each build (usage/limit only). */
+const SPEND = {
+  usage: 0.0227,        // total usage on the key in USD
+  keyLimit: 10,         // hard limit set on the OpenRouter key
+  checkedAt: '2026-10-24T01:24:00+05:30', // time of the last check
+  baseline: 0.0227,     // usage before the first build
+  runs: [],             // {slug, cost}
+  stopped: false,
+};
+</script>
+
+<script>
+(() => {
+const $ = (s, r=document) => r.querySelector(s);
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const diffWord = ['','Warm-up','Warm-up','Medium','Hard','Brutal'];
+const fullPrompt = c => c.prompt + ' ' + RULES(c.slug);
+const ICON_COPY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+const ICON_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
+async function copyText(t){
+  try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(t); return true; } } catch(e) {}
+  const ta=document.createElement('textarea'); ta.value=t; ta.setAttribute('readonly',''); ta.style.cssText='position:fixed;top:0;left:0;opacity:0'; document.body.appendChild(ta); ta.select();
+  let ok=false; try { ok=document.execCommand('copy'); } catch(e) {} ta.remove(); return ok;
+}
+
+/* ---------- toast ---------- */
+let tt; function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),2600); }
+
+/* ---------- budget run ---------- */
+const recs = CH.filter(c=>c.rec).sort((a,b)=>a.rec-b.rec);
+$('#run').innerHTML = recs.map(c=>`<li class="${c.rec===4?'opt':''}" style="--a:${c.a}"><span class="n">${c.rec}</span><div><h4>${esc(c.title)}<small>${c.role}</small></h4><p>${esc(c.pitch)}</p></div><div class="cost">${c.cost}<small>${c.rec===4?'if spend ≤ $7':'est.'}</small></div></li>`).join('');
+
+/* ---------- spend panel ---------- */
+const money = v => '$' + v.toFixed(2);
+if (SPEND.usage != null) {
+  $('#spendNow').textContent = money(SPEND.usage);
+  const f=$('#spendFill'); f.style.width = Math.min(100, SPEND.usage/12*100)+'%'; if (SPEND.usage >= 9) f.classList.add('hot');
+  const st=$('#spendStatus');
+  const stopAt = Math.min(11, SPEND.keyLimit ?? 11);
+  if (SPEND.stopped || SPEND.usage >= stopAt) { st.className='status-pill stop'; st.textContent='Stopped: spend limit reached, no more prompts'; }
+  else st.textContent = money(stopAt - SPEND.usage) + ' left before the ' + (stopAt<11?'$10 key cap':'stop line');
+  const rows = [];
+  if (SPEND.baseline != null) rows.push(`<li><span>Before the test</span><b>${money(SPEND.baseline)}</b></li>`);
+  SPEND.runs.forEach(r=>{ const c=CH.find(x=>x.slug===r.slug); rows.push(`<li><span>${esc(c?c.title:r.slug)}</span><b>${r.cost!=null?'+'+money(r.cost):'running'}</b></li>`); });
+  $('#spendRows').innerHTML = rows.join('');
+  if (SPEND.checkedAt) $('#spendChecked').textContent = 'Last checked ' + new Date(SPEND.checkedAt).toLocaleString([], {hour:'2-digit',minute:'2-digit',month:'short',day:'numeric'}) + '. No more prompts once usage reaches $11 (or the $10 key cap).';
+}
+
+/* ---------- cards ---------- */
+$('#grid').innerHTML = CH.map((c,i)=>`
+<article class="card${c.rec?' rec':''}" id="c-${c.slug}" data-slug="${c.slug}" style="--a:${c.a}">
+  <div class="teaser" data-teaser="${c.slug}"></div>
+  <div class="body">
+    <div class="meta"><span class="idx">${String(i+1).padStart(2,'0')} / ${c.slug}</span>
+      <span class="diff">${diffWord[c.d]} <span class="pips">${[1,2,3,4,5].map(n=>`<i class="${n<=c.d?'on':''}"></i>`).join('')}</span> ${c.d}/5</span></div>
+    <h3>${esc(c.title)}</h3>
+    <p class="pitch">${esc(c.pitch)}</p>
+    <div class="tags">${c.tags.map(t=>`<span>${esc(t)}</span>`).join('')}</div>
+    <div class="wow"><b>The wow moment</b>${esc(c.wow)}</div>
+    <div class="pbox"><div class="pbar"><span>Prompt for Kimi<small>${fullPrompt(c).split(/\s+/).length} words</small></span><button class="btn copy" type="button" data-copy="${c.slug}">${ICON_COPY}<span>Copy prompt</span></button></div>
+      <div class="prompt"><p>${esc(c.prompt)} <span class="rule">${esc(RULES(c.slug))}</span></p></div></div>
+    <div class="foot"><span class="slug">Est. cost <b>${c.cost}</b> · apps/${c.slug}/</span><button class="btn pick" type="button" data-pick="${c.slug}" title="Optional: tell Chief which one you are running">Pick this (optional)</button></div>
+  </div>
+</article>`).join('');
+
+$('#rb').innerHTML = RUBRIC.map(r=>`<div class="rb"><div class="w">${r.w}<small>% weight</small></div><h4>${r.h}</h4><dl><dt>1</dt><dd>${r.lo}</dd><dt class="hi">5</dt><dd>${r.hi}</dd></dl></div>`).join('');
+$('#rulesText').textContent = RULES('<slug>');
+
+/* ---------- picking ---------- */
+const picked = new Set();
+const api = () => window.asklogPages;
+function setPick(slug, on){
+  const c = CH.find(x=>x.slug===slug), card = $('#c-'+slug);
+  if (!api()) { toast('Open this page through asklog to send picks.'); return; }
+  if (on) picked.add(slug); else picked.delete(slug);
+  card.classList.toggle('picked', on);
+  card.querySelector('[data-pick]').textContent = on ? 'Picked ✓' : 'Pick this';
+  api().queuePrompt(on ? `Pick: ${c.title} (${slug})` : `Unpick: ${c.title} (${slug})`,
+    { queueKey: 'pick-'+slug, tag: 'pick', data: { slug, title: c.title, picked: on, difficulty: c.d, estCost: c.cost }, element: card });
+  renderTray();
+}
+function renderTray(){
+  const n = picked.size;
+  $('#tray').classList.toggle('show', n>0);
+  $('#trayN').textContent = n + (n===1?' challenge picked':' challenges picked');
+  $('#trayL').textContent = [...picked].join(' · ');
+}
+document.addEventListener('click', e=>{
+  const p = e.target.closest('[data-pick]'); if (p) { const s=p.dataset.pick; setPick(s, !picked.has(s)); return; }
+  const cp = e.target.closest('[data-copy]');
+  if (cp) { const c=CH.find(x=>x.slug===cp.dataset.copy);
+    copyText(fullPrompt(c)).then(ok=>{ if(!ok) return toast('Copy failed: select the prompt text and copy it by hand.');
+      cp.classList.add('done'); cp.innerHTML=ICON_OK+'<span>Copied</span>'; clearTimeout(cp._t);
+      cp._t=setTimeout(()=>{ cp.classList.remove('done'); cp.innerHTML=ICON_COPY+'<span>Copy prompt</span>'; },2000);
+      toast('Prompt copied. Paste it into the OpenCode pane.'); }); }
+});
+$('#pickRun').onclick = () => recs.forEach(c=>{ if(!picked.has(c.slug)) setPick(c.slug,true); });
+$('#send').onclick = () => { if (!api()) return toast('Open this page through asklog to send picks.'); api().sendQueuedPrompts(); toast('Picks sent to Chief.'); };
+
+/* ---------- animation runtime ---------- */
+const loops = [];
+const io = new IntersectionObserver(es=>es.forEach(e=>{ const l=loops.find(x=>x.el===e.target); if(l) l.on=e.isIntersecting; }), {rootMargin:'80px'});
+function loop(el, fn){ const l={el,fn,on:false}; loops.push(l); io.observe(el); return l; }
+let last = performance.now();
+function tick(now){ const dt=Math.min(.05,(now-last)/1000); last=now; for(const l of loops) if(l.on && !document.hidden) l.fn(now/1000, dt); if(!reduce) requestAnimationFrame(tick); }
+function sizer(cv, max=2){ const ro=new ResizeObserver(()=>{ const d=Math.min(max,devicePixelRatio||1); cv.width=Math.max(1,Math.round(cv.clientWidth*d)); cv.height=Math.max(1,Math.round(cv.clientHeight*d)); cv.d=d; cv.cw=cv.clientWidth; cv.ch=cv.clientHeight; }); ro.observe(cv); cv.d=1; cv.cw=cv.clientWidth||400; cv.ch=cv.clientHeight||250; }
+const T = s => $(`[data-teaser="${s}"]`);
+const rand = (a,b)=>a+Math.random()*(b-a);
+
+/* 01 keyboard */
+(() => {
+  const el=T('keyboard-configurator');
+  el.innerHTML = `<div class="kb"><div class="kb-board"></div></div><div class="swatches"></div><span class="label">CSS 3D · click a swatch</span>`;
+  const board=el.querySelector('.kb-board');
+  const rows=[[1,1,1,1,1,1,1,1,1,1,1,1,1,2],[1.5,1,1,1,1,1,1,1,1,1,1,1,1,1.5],[2,1,1,1,1,1,1,1,1,1,1,1,2],[2.5,1,1,1,1,1,1,1,1,1,1,2.5],[1.5,1.5,1.5,6,1.5,1.5,1.5]];
+  // grid has 15 cols; scale widths to integer-ish spans via fractions on a 30-col grid
+  board.style.gridTemplateColumns='repeat(30,2.05cqw)'; board.style.columnGap='.55cqw'; board.style.rowGap='.55cqw';
+  const keys=[];
+  rows.forEach((r,ri)=>{ r.forEach((w,ci)=>{ const k=document.createElement('i'); k.className='key'; k.style.setProperty('--w',Math.round(w*2)); if((ri===0&&ci===0)||(ri===2&&ci===12)||(ri===4&&ci===3)) k.classList.add('acc'); k.style.setProperty('--d',(ci*0.035+ri*0.02)+'s'); board.appendChild(k); keys.push(k); }); });
+  const themes=[
+    {n:'Laser',case:'#1c1d20',cap:'#e9e6dc',capd:'#b4b0a3',acc:'#c6ff3d',accd:'#7fa61f',glow:'#c6ff3d'},
+    {n:'Miami',case:'#f4f1ec',cap:'#2fd6c9',capd:'#1d9a90',acc:'#ff5ca8',accd:'#b8326f',glow:'#ff5ca8'},
+    {n:'Nord',case:'#3b4252',cap:'#d8dee9',capd:'#9aa3b5',acc:'#88c0d0',accd:'#5a8fa0',glow:'#88c0d0'},
+    {n:'Carbon',case:'#2b2b2e',cap:'#3a3a3e',capd:'#1d1d20',acc:'#ff7a1a',accd:'#b04f06',glow:'#ff7a1a'},
+  ];
+  const sw=el.querySelector('.swatches');
+  themes.forEach((t,i)=>{ const b=document.createElement('button'); b.type='button'; b.title=t.n; b.setAttribute('data-asklog-action',''); b.setAttribute('aria-label','Colourway '+t.n); b.style.background=`linear-gradient(135deg,${t.cap} 50%,${t.acc} 50%)`; b.onclick=()=>{apply(i); auto=false;}; sw.appendChild(b); });
+  let cur=0, auto=true;
+  function apply(i){ cur=i; const t=themes[i]; for(const k of ['case','cap','capd','acc','accd','glow']) board.style.setProperty('--'+k,t[k]); [...sw.children].forEach((b,j)=>b.classList.toggle('on',j===i)); }
+  apply(0);
+  let nextKey=0, nextTheme=4;
+  loop(el,(t,dt)=>{
+    if(t>nextKey){ const k=keys[(Math.random()*keys.length)|0]; k.classList.add('dn'); setTimeout(()=>k.classList.remove('dn'),110); nextKey=t+rand(.06,.22)+(Math.random()<.12?.5:0); }
+    if(auto && t>nextTheme){ apply((cur+1)%themes.length); nextTheme=t+4.2; }
+    if(nextTheme===4) nextTheme=t+4.2;
+  });
+})();
+
+/* 02 aurora shader */
+(() => {
+  const el=T('aurora-shader');
+  el.innerHTML=`<canvas data-asklog-action></canvas><div class="aur-type"><b>AURORA<br>SIGNAL</b><span>LIVE GLSL · MOVE YOUR CURSOR</span></div><span class="label">WebGL fragment shader</span>`;
+  const cv=el.querySelector('canvas'); sizer(cv,1.25);
+  const gl=cv.getContext('webgl',{antialias:false,premultipliedAlpha:false});
+  if(!gl){ el.style.background='linear-gradient(135deg,#031b2a,#0b5d63,#5a2a8a)'; return; }
+  const vs=`attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
+  const fs=`precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;
+  float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+  float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+  float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
+  void main(){vec2 uv=gl_FragCoord.xy/r;vec2 p=(gl_FragCoord.xy-.5*r)/r.y;vec2 mm=(m-.5)*vec2(r.x/r.y,1.);
+   vec2 dv=p-mm;float d=length(dv);float a=2.2*exp(-d*3.2);float c=cos(a),s=sin(a);p=mm+mat2(c,-s,s,c)*dv;
+   vec2 q=vec2(fbm(p*1.5+vec2(0.,t*.06)),fbm(p*1.5+vec2(5.2,1.3)-t*.05));
+   vec2 w=vec2(fbm(p*1.5+2.2*q+vec2(1.7,9.2)+t*.12),fbm(p*1.5+2.2*q+vec2(8.3,2.8)-t*.09));
+   float f=fbm(p*1.3+2.6*w);
+   float rib=smoothstep(.25,0.,abs(p.y+.15*sin(p.x*2.+t*.4)+.35*(f-.5)))*.9;
+   vec3 col=vec3(.01,.015,.05);
+   col=mix(col,vec3(.03,.42,.48),clamp(f*f*2.2,0.,1.));
+   col=mix(col,vec3(.42,.16,.85),clamp(length(q)*.7-.1,0.,1.)*.7);
+   col=mix(col,vec3(.62,1.,.34),clamp(w.x*w.x*1.4-.2,0.,1.)*.55);
+   col+=rib*vec3(.25,.9,.85)*f;
+   col+=.35*exp(-d*5.)*vec3(.55,.95,1.);
+   col*=.55+.9*f;col*=1.-.45*length(uv-.5);
+   col+=(h(gl_FragCoord.xy+fract(t)*91.)-.5)*.05;
+   gl_FragColor=vec4(col,1.);}`;
+  const sh=(ty,src)=>{const s=gl.createShader(ty);gl.shaderSource(s,src);gl.compileShader(s);return s;};
+  const pr=gl.createProgram(); gl.attachShader(pr,sh(gl.VERTEX_SHADER,vs)); gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fs)); gl.linkProgram(pr);
+  if(!gl.getProgramParameter(pr,gl.LINK_STATUS)){ el.style.background='linear-gradient(135deg,#031b2a,#0b5d63,#5a2a8a)'; return; }
+  gl.useProgram(pr);
+  const b=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,b); gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+  const loc=gl.getAttribLocation(pr,'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+  const ur=gl.getUniformLocation(pr,'r'), ut=gl.getUniformLocation(pr,'t'), um=gl.getUniformLocation(pr,'m');
+  let tx=.7,ty=.55,mx=.7,my=.55,hover=false;
+  const mv=e=>{const r=cv.getBoundingClientRect(); tx=(e.clientX-r.left)/r.width; ty=1-(e.clientY-r.top)/r.height; hover=true;};
+  cv.addEventListener('pointermove',mv); cv.addEventListener('pointerdown',mv); cv.addEventListener('pointerleave',()=>hover=false);
+  const draw=t=>{ if(!hover){ tx=.5+.3*Math.cos(t*.35); ty=.5+.25*Math.sin(t*.5); } mx+=(tx-mx)*.06; my+=(ty-my)*.06;
+    gl.viewport(0,0,cv.width,cv.height); gl.uniform2f(ur,cv.width,cv.height); gl.uniform1f(ut,t); gl.uniform2f(um,mx,my); gl.drawArrays(gl.TRIANGLES,0,3); };
+  loop(el,(t)=>draw(t));
+  if(reduce) requestAnimationFrame(()=>draw(3));
+})();
+
+/* 03 neon breakout */
+(() => {
+  const el=T('neon-breakout'); el.innerHTML=`<canvas></canvas><span class="hint">AUTOPLAY · JUICE ON</span><span class="label">canvas 2D</span>`;
+  const cv=el.querySelector('canvas'); sizer(cv); const x=cv.getContext('2d');
+  const cols=['#ff3df2','#b18cff','#7af0ff','#2ee6a0','#ffd23d'];
+  let bricks=[], ball, pad={x:.5}, parts=[], shake=0, trail=[], combo=0, flashT=0;
+  function reset(){ bricks=[]; for(let r=0;r<5;r++) for(let c=0;c<10;c++) bricks.push({x:.06+c*.088,y:.12+r*.07,w:.08,h:.052,c:cols[r],hit:0}); ball={x:.5,y:.8,vx:.42,vy:-.62}; }
+  reset();
+  loop(el,(t,dt)=>{
+    const W=cv.width,H=cv.height,d=cv.d; if(!W) return;
+    const steps=2; for(let s=0;s<steps;s++){ const h=dt/steps;
+      ball.x+=ball.vx*h; ball.y+=ball.vy*h*(W/H);
+      if(ball.x<.015||ball.x>.985){ball.vx*=-1; ball.x=Math.max(.015,Math.min(.985,ball.x));}
+      if(ball.y<.03){ball.vy=Math.abs(ball.vy);}
+      if(ball.y>.88&&ball.vy>0&&Math.abs(ball.x-pad.x)<.1){ ball.vy=-Math.abs(ball.vy); ball.vx=(ball.x-pad.x)*5+rand(-.1,.1); const sp=.78/Math.hypot(ball.vx,ball.vy); ball.vx*=sp; ball.vy*=sp; combo=0; pad.kick=1; }
+      if(ball.y>1.02){ ball.y=.8; ball.vy=-Math.abs(ball.vy); }
+      for(const b of bricks){ if(b.dead) continue; if(ball.x>b.x&&ball.x<b.x+b.w&&ball.y>b.y&&ball.y<b.y+b.h){ b.dead=1; ball.vy*=-1; combo++; shake=Math.min(14,5+combo*2); flashT=.06;
+        for(let i=0;i<18;i++){ const a=rand(0,6.28),v=rand(.1,.6); parts.push({x:b.x+b.w/2,y:b.y+b.h/2,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:1,c:b.c}); } break; } }
+    }
+    if(bricks.every(b=>b.dead)) reset();
+    pad.x+=(Math.max(.1,Math.min(.9,ball.x+Math.sin(t*1.7)*.04))-pad.x)*Math.min(1,dt*9);
+    pad.kick=(pad.kick||0)*Math.pow(.002,dt);
+    trail.push({x:ball.x,y:ball.y}); if(trail.length>14) trail.shift();
+    shake*=Math.pow(.004,dt); flashT-=dt;
+    x.setTransform(1,0,0,1,0,0); x.fillStyle='#07040c'; x.fillRect(0,0,W,H);
+    x.setTransform(1,0,0,1,(Math.random()-.5)*shake*d,(Math.random()-.5)*shake*d);
+    x.globalCompositeOperation='lighter';
+    for(const b of bricks){ if(b.dead) continue; x.shadowBlur=14*d; x.shadowColor=b.c; x.fillStyle=b.c; x.globalAlpha=.85; const r=4*d; x.beginPath(); x.roundRect?x.roundRect(b.x*W,b.y*H,b.w*W,b.h*H,r):x.rect(b.x*W,b.y*H,b.w*W,b.h*H); x.fill(); }
+    x.globalAlpha=1;
+    trail.forEach((p,i)=>{ x.fillStyle=`rgba(255,255,255,${i/trail.length*.35})`; x.shadowBlur=0; x.beginPath(); x.arc(p.x*W,p.y*H,(2+i*.35)*d,0,7); x.fill(); });
+    for(const p of parts){ p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy+=.9*dt; p.l-=dt*1.4; if(p.l>0){ x.fillStyle=p.c; x.globalAlpha=p.l; x.fillRect(p.x*W,p.y*H,3*d*p.l+1,3*d*p.l+1);} }
+    parts=parts.filter(p=>p.l>0); x.globalAlpha=1;
+    const sq=1+Math.min(.5,Math.hypot(ball.vx,ball.vy)*.3);
+    x.save(); x.translate(ball.x*W,ball.y*H); x.rotate(Math.atan2(ball.vy,ball.vx)); x.scale(sq,1/sq); x.shadowBlur=18*d; x.shadowColor='#fff'; x.fillStyle='#fff'; x.beginPath(); x.arc(0,0,5*d,0,7); x.fill(); x.restore();
+    const pw=.2*W, ph=8*d*(1-pad.kick*.4); x.shadowBlur=20*d; x.shadowColor='#ff3df2'; x.fillStyle='#ff9ff8'; x.beginPath(); (x.roundRect?x.roundRect(pad.x*W-pw/2,.9*H+pad.kick*4*d,pw,ph,ph/2):x.rect(pad.x*W-pw/2,.9*H,pw,ph)); x.fill();
+    x.globalCompositeOperation='source-over'; x.shadowBlur=0;
+    if(combo>1){ x.setTransform(1,0,0,1,0,0); x.fillStyle='rgba(255,255,255,.9)'; x.font=`800 ${18*d}px Inter Tight,sans-serif`; x.textAlign='right'; x.fillText('x'+combo,W-16*d,28*d); }
+    if(flashT>0){ x.setTransform(1,0,0,1,0,0); x.fillStyle='rgba(255,255,255,.06)'; x.fillRect(0,0,W,H); }
+  });
+})();
+
+/* 04 physics */
+(() => {
+  const el=T('physics-playground'); el.innerHTML=`<canvas data-asklog-action></canvas><span class="hint">CLICK TO DETONATE</span><span class="label">verlet-ish canvas sim</span>`;
+  const cv=el.querySelector('canvas'); sizer(cv); const x=cv.getContext('2d');
+  const pal=['#ffb43d','#ff7a3d','#ffd23d','#fff1c9','#ff5c6c','#2ee6a0'];
+  let B=[], spawnT=0, boomT=3.5, seeded=false;
+  const boom=(px,py)=>{ for(const b of B){ const dx=b.x-px,dy=b.y-py,dd=Math.hypot(dx,dy)+1; const f=Math.max(0,1-dd/260)*1400; b.vx+=dx/dd*f; b.vy+=dy/dd*f; } rings.push({x:px,y:py,r:0,l:1}); };
+  let rings=[];
+  cv.addEventListener('pointerdown',e=>{ const r=cv.getBoundingClientRect(); boom(e.clientX-r.left,e.clientY-r.top); boomT=1e9; });
+  loop(el,(t,dt)=>{
+    const W=cv.cw,H=cv.ch,d=cv.d; if(!W) return;
+    if(!seeded){ seeded=true; for(let i=0;i<30;i++){ const r=rand(8,20)*(W/500+.4); B.push({x:rand(r,W-r),y:rand(H*.15,H-r),vx:rand(-80,80),vy:rand(-200,0),r,c:pal[(Math.random()*pal.length)|0],sq:0}); } }
+    spawnT-=dt; if(spawnT<0&&B.length<46){ const r=rand(8,20)*(W/500+.4); B.push({x:rand(r,W-r),y:-r,vx:rand(-60,60),vy:0,r,c:pal[(Math.random()*pal.length)|0],sq:0}); spawnT=.16; }
+    boomT-=dt; if(boomT<0){ boom(rand(W*.3,W*.7),H-10); boomT=5.5; }
+    const sub=3,h=dt/sub;
+    for(let s=0;s<sub;s++){
+      for(const b of B){ b.vy+=1300*h; b.x+=b.vx*h; b.y+=b.vy*h;
+        if(b.y>H-b.r){ if(b.vy>200) b.sq=Math.min(.35,b.vy/2500); b.y=H-b.r; b.vy*=-.45; b.vx*=.985; }
+        if(b.x<b.r){b.x=b.r;b.vx*=-.6} if(b.x>W-b.r){b.x=W-b.r;b.vx*=-.6} }
+      for(let i=0;i<B.length;i++) for(let j=i+1;j<B.length;j++){ const a=B[i],c=B[j],dx=c.x-a.x,dy=c.y-a.y,dd=Math.hypot(dx,dy),m=a.r+c.r;
+        if(dd<m&&dd>0){ const nx=dx/dd,ny=dy/dd,o=(m-dd)/2; a.x-=nx*o;a.y-=ny*o;c.x+=nx*o;c.y+=ny*o; const rv=(c.vx-a.vx)*nx+(c.vy-a.vy)*ny; if(rv<0){ const jj=-(1.4)*rv/2; a.vx-=jj*nx;a.vy-=jj*ny;c.vx+=jj*nx;c.vy+=jj*ny; } } }
+    }
+    x.setTransform(d,0,0,d,0,0); const g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#1a1006'); g.addColorStop(1,'#070503'); x.fillStyle=g; x.fillRect(0,0,W,H);
+    x.strokeStyle='rgba(255,180,61,.07)'; x.lineWidth=1; for(let gx=0;gx<W;gx+=28){x.beginPath();x.moveTo(gx,0);x.lineTo(gx,H);x.stroke();}
+    for(const rg of rings){ rg.r+=dt*500; rg.l-=dt*1.6; if(rg.l>0){ x.strokeStyle=`rgba(255,220,150,${rg.l})`; x.lineWidth=3*rg.l; x.beginPath(); x.arc(rg.x,rg.y,rg.r,0,7); x.stroke(); } } rings=rings.filter(r=>r.l>0);
+    for(const b of B){ b.sq*=Math.pow(.001,dt); x.save(); x.translate(b.x,b.y); x.fillStyle='rgba(0,0,0,.35)'; x.beginPath(); x.ellipse(0,H-b.y+2-b.r*.0,b.r*(1-(H-b.y)/H*.6),3,0,0,7); x.restore();
+      x.save(); x.translate(b.x,b.y+b.r*b.sq); x.scale(1+b.sq,1-b.sq); const rg=x.createRadialGradient(-b.r*.35,-b.r*.35,1,0,0,b.r); rg.addColorStop(0,'#fff8e6'); rg.addColorStop(.25,b.c); rg.addColorStop(1,'#000'); x.fillStyle=rg; x.globalAlpha=.95; x.beginPath(); x.arc(0,0,b.r,0,7); x.fill(); x.restore(); }
+    x.globalAlpha=1;
+  });
+})();
+
+/* 05 glass player */
+(() => {
+  const el=T('glass-player');
+  el.innerHTML=`<div class="gp"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i><div class="gp-card"><div class="gp-art"></div><div><div class="gp-t">Neon Tide</div><div class="gp-s">Lumen · generated synthwave</div><div class="gp-bars">${Array.from({length:26},()=>`<i style="--t:${rand(.35,.9).toFixed(2)}s;--dl:-${rand(0,1).toFixed(2)}s"></i>`).join('')}</div><div class="gp-prog"><i></i></div><div class="gp-ctl"><u></u><i></i><u></u></div></div></div></div><span class="label">CSS backdrop-filter</span>`;
+})();
+
+/* 06 design canvas */
+(() => {
+  const el=T('design-canvas');
+  el.innerHTML=`<div class="dc"><svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice">
+  <defs><pattern id="dots" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".8" fill="#34343c"/></pattern></defs>
+  <rect width="400" height="250" fill="url(#dots)"/>
+  <text x="70" y="40" font-size="7" fill="#8a8a96" font-family="Inter Tight,sans-serif">Frame 1</text>
+  <rect x="70" y="44" width="260" height="178" rx="3" fill="#fbfbfc"/>
+  <rect x="88" y="62" width="110" height="10" rx="2" fill="#18181c"/><rect x="88" y="78" width="70" height="6" rx="2" fill="#c9c9d1"/>
+  <circle id="dcC" cx="270" cy="150" r="30" fill="#ffd23d"/>
+  <rect x="88" y="168" width="80" height="34" rx="6" fill="#8ea2ff"/>
+  <g id="dcGuide" opacity="0"><line x1="70" y1="150" x2="330" y2="150" stroke="#ff2e7e" stroke-width=".8"/><line id="dcDist" x1="0" y1="150" x2="0" y2="150" stroke="#ff2e7e" stroke-width=".8"/><rect id="dcLblB" x="0" y="140" width="22" height="10" rx="2" fill="#ff2e7e"/><text id="dcLbl" x="0" y="147.5" font-size="6.5" fill="#fff" font-family="JetBrains Mono,monospace" text-anchor="middle">40</text></g>
+  <g id="dcR"><rect width="56" height="56" rx="8" fill="#ff5c8a"/><rect x="-1" y="-1" width="58" height="58" fill="none" stroke="#0d99ff" stroke-width="1"/>${[[-1,-1],[27,-1],[57,-1],[-1,27],[57,27],[-1,57],[27,57],[57,57]].map(([a,b])=>`<rect x="${a-2}" y="${b-2}" width="4" height="4" fill="#fff" stroke="#0d99ff" stroke-width=".8"/>`).join('')}<rect x="14" y="62" width="28" height="9" rx="2" fill="#0d99ff"/><text x="28" y="68.5" font-size="5.5" fill="#fff" text-anchor="middle" font-family="JetBrains Mono,monospace">56×56</text></g>
+  <g id="cu1"><path d="M0 0 L0 12 L3.5 9 L6 14 L8 13 L5.6 8.2 L10 8 Z" fill="#ff5c8a" stroke="#fff" stroke-width=".8"/><rect x="9" y="11" width="22" height="9" rx="4" fill="#ff5c8a"/><text x="20" y="17.5" font-size="6" fill="#fff" text-anchor="middle" font-family="Inter Tight,sans-serif" font-weight="700">Ana</text></g>
+  <g id="cu2"><path d="M0 0 L0 12 L3.5 9 L6 14 L8 13 L5.6 8.2 L10 8 Z" fill="#2ee6a0" stroke="#fff" stroke-width=".8"/><rect x="9" y="11" width="22" height="9" rx="4" fill="#2ee6a0"/><text x="20" y="17.5" font-size="6" fill="#0a0a0a" text-anchor="middle" font-family="Inter Tight,sans-serif" font-weight="700">Leo</text></g>
+  </svg><div class="chrome"><i class="on"></i><i></i><i></i><i></i><i></i></div></div><span class="label">SVG · smart guides</span>`;
+  const R=el.querySelector('#dcR'), G=el.querySelector('#dcGuide'), C1=el.querySelector('#cu1'), C2=el.querySelector('#cu2'), dist=el.querySelector('#dcDist'), lbl=el.querySelector('#dcLbl'), lblB=el.querySelector('#dcLblB');
+  const ease=u=>u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;
+  const A={x:110,y:96}, Bp={x:174,y:122}; // B: centre y = 150 aligns with circle
+  loop(el,(t)=>{
+    const p=(t%5)/5; let u;
+    if(p<.25) u=ease(p/.25); else if(p<.55) u=1; else if(p<.8) u=1-ease((p-.55)/.25); else u=0;
+    const jit = p<.25 && p>.2 ? Math.sin(t*40)*.6 : 0;
+    const X=A.x+(Bp.x-A.x)*u, Y=A.y+(Bp.y-A.y)*u+jit;
+    R.setAttribute('transform',`translate(${X.toFixed(2)} ${Y.toFixed(2)})`);
+    const on=u>.97; G.setAttribute('opacity',on?1:0);
+    const gapL=X+56, gapR=240, mid=(gapL+gapR)/2; dist.setAttribute('x1',gapL); dist.setAttribute('x2',gapR); lbl.setAttribute('x',mid); lblB.setAttribute('x',mid-11); lbl.textContent=Math.round(gapR-gapL);
+    C1.setAttribute('transform',`translate(${(X+48).toFixed(1)} ${(Y+46).toFixed(1)})`);
+    C2.setAttribute('transform',`translate(${(250+60*Math.sin(t*.7)).toFixed(1)} ${(80+28*Math.sin(t*1.1+1)).toFixed(1)})`);
+  });
+})();
+
+/* 07 trading */
+(() => {
+  const el=T('trading-terminal'); el.innerHTML=`<canvas></canvas><div class="tr-head">BTC-PERP · 1m<b id="trP">67,412.50</b><span id="trC" class="up">+2.41%</span></div><span class="label">canvas · simulated feed</span>`;
+  const cv=el.querySelector('canvas'); sizer(cv); const x=cv.getContext('2d'); const P=el.querySelector('#trP'), Cc=el.querySelector('#trC');
+  let price=67412.5, open0=65826, vol=8; const C=[]; for(let i=0;i<60;i++){ const o=price; let h=o,l=o,c=o; for(let k=0;k<12;k++){ c+=rand(-1,1)*vol*3; h=Math.max(h,c); l=Math.min(l,c);} C.push({o,h,l,c,v:rand(.3,1)}); price=c; }
+  let nextC=0, lo=0, hi=0, txt=0; let book=Array.from({length:12},()=>rand(.2,1));
+  loop(el,(t,dt)=>{
+    const W=cv.width,H=cv.height,d=cv.d; if(!W) return;
+    vol += (rand(4,14)-vol)*dt*.5; const cur=C[C.length-1]; cur.c+=rand(-1,1)*vol*dt*12+ (rand(0,1)<.02?rand(-1,1)*vol*6:0); cur.h=Math.max(cur.h,cur.c); cur.l=Math.min(cur.l,cur.c); cur.v+=dt*rand(0,.6);
+    if(t>nextC){ C.push({o:cur.c,h:cur.c,l:cur.c,c:cur.c,v:.1}); if(C.length>80) C.shift(); nextC=t+.7; }
+    book=book.map(b=>Math.max(.05,Math.min(1,b+rand(-.15,.15))));
+    const bw=W*.2, cw=W-bw; const n=Math.min(C.length, Math.floor(cw/(9*d)));
+    const vis=C.slice(-n); let mn=Infinity,mx=-Infinity; vis.forEach(c=>{mn=Math.min(mn,c.l);mx=Math.max(mx,c.h);});
+    const pad=(mx-mn)*.18+1; if(!lo){lo=mn-pad;hi=mx+pad;} lo+=(mn-pad-lo)*Math.min(1,dt*3); hi+=(mx+pad-hi)*Math.min(1,dt*3);
+    const top=H*.3, bot=H*.82, Y=v=>bot-(v-lo)/(hi-lo)*(bot-top);
+    x.fillStyle='#05090a'; x.fillRect(0,0,W,H);
+    x.strokeStyle='rgba(255,255,255,.05)'; x.lineWidth=1; for(let i=0;i<6;i++){const yy=top+i*(bot-top)/5; x.beginPath(); x.moveTo(0,yy); x.lineTo(cw,yy); x.stroke();}
+    const step=cw/n; vis.forEach((c,i)=>{ const up=c.c>=c.o, col=up?'#2ee6a0':'#ff5c6c', cx=i*step+step/2; x.strokeStyle=col; x.fillStyle=col; x.beginPath(); x.moveTo(cx,Y(c.h)); x.lineTo(cx,Y(c.l)); x.stroke(); const y1=Y(Math.max(c.o,c.c)), y2=Y(Math.min(c.o,c.c)); x.fillRect(cx-step*.32,y1,step*.64,Math.max(1,y2-y1)); x.globalAlpha=.25; const vh=c.v*H*.08; x.fillRect(cx-step*.32,H-vh-4*d,step*.64,vh); x.globalAlpha=1; });
+    // MA line
+    x.strokeStyle='#ffd23d'; x.lineWidth=1.4*d; x.beginPath(); vis.forEach((c,i)=>{ const s=vis.slice(Math.max(0,i-8),i+1); const m=s.reduce((a,b)=>a+b.c,0)/s.length; const px=i*step+step/2; i?x.lineTo(px,Y(m)):x.moveTo(px,Y(m)); }); x.stroke();
+    const ly=Y(cur.c); x.setLineDash([4*d,4*d]); x.strokeStyle='rgba(255,255,255,.5)'; x.lineWidth=1; x.beginPath(); x.moveTo(0,ly); x.lineTo(cw,ly); x.stroke(); x.setLineDash([]);
+    // book
+    const rows=12, rh=(H*.86)/rows; for(let i=0;i<rows;i++){ const ask=i<6, yy=H*.07+i*rh; x.fillStyle=ask?'rgba(255,92,108,.22)':'rgba(46,230,160,.22)'; x.fillRect(W-book[i]*bw,yy,book[i]*bw,rh-2*d); x.fillStyle=ask?'#ff8a95':'#6ff2c0'; x.font=`500 ${9*d}px JetBrains Mono,monospace`; x.textAlign='left'; x.fillText((cur.c+(ask?(6-i):-(i-5))*2.5).toFixed(1),cw+6*d,yy+rh*.68); }
+    x.fillStyle='#e8e8ee'; x.fillRect(cw-1,0,1,H);
+    txt-=dt; if(txt<0){ const ch=(cur.c-open0)/open0*100; P.textContent=cur.c.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); Cc.textContent=(ch>=0?'+':'')+ch.toFixed(2)+'%'; Cc.className=ch>=0?'up':'dn'; P.style.color=cur.c>=cur.o?'#6ff2c0':'#ff8a95'; txt=.25; }
+  });
+})();
+
+/* 08 command palette */
+(() => {
+  const el=T('command-palette');
+  el.innerHTML=`<div class="cp"><div class="cp-bg">${'<i></i>'.repeat(6)}</div><div class="cp-box"><div class="cp-in"><span class="cp-crumb"></span><span class="cp-q"></span><span class="cp-caret"></span><span class="cp-ph">Type a command or search…</span></div><div class="cp-list"><div class="cp-hl"></div><div class="cp-items"></div></div></div></div><span class="label">⌘K · keyboard only</span>`;
+  const q=el.querySelector('.cp-q'), ph=el.querySelector('.cp-ph'), items=el.querySelector('.cp-items'), hl=el.querySelector('.cp-hl'), crumb=el.querySelector('.cp-crumb');
+  const S=[
+    {q:'chst', crumb:'', sec:'Commands', list:[['Change status','#8ea2ff','S'],['Change priority','#b18cff','P'],['Create sub-issue','#2ee6a0','⇧C']], pick:0},
+    {q:'prog', crumb:'Change status', sec:'Status', list:[['Backlog','#5a5a66',''],['In Progress','#ffd23d','2'],['In Review','#2ee6a0','3']], pick:1},
+    {q:'mara', crumb:'', sec:'Assign to', list:[['Mara Okafor','#ff8a5c','A'],['Marcus Lee','#7af0ff',''],['Amara Diaz','#ff5c8a','']], pick:0},
+  ];
+  const hiMatch=(name,qq)=>{ let j=0, out=''; for(const ch of name){ if(j<qq.length && ch.toLowerCase()===qq[j]){ out+=`<mark>${ch}</mark>`; j++; } else out+=ch; } return out; };
+  let vis=false; new IntersectionObserver(es=>vis=es[0].isIntersecting).observe(el);
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms)); const wait=async ms=>{ await sleep(ms); while(!vis||document.hidden) await sleep(300); };
+  const place=i=>{ hl.style.top=`calc(${el.querySelector('.cp-sec').offsetHeight}px + 1.2cqw + ${i} * 5.4cqw)`; };
+  function render(s,qq){ items.innerHTML=`<div class="cp-sec">${s.sec}</div>`+s.list.map(([n,c,k])=>`<div class="cp-it" style="--c:${c}"><span class="ic"></span><span>${hiMatch(n,qq)}</span>${k?`<kbd>${k}</kbd>`:''}</div>`).join(''); }
+  (async()=>{ let si=0; render(S[0],''); place(0); if(reduce) return;
+    for(;;){ const s=S[si]; crumb.textContent=s.crumb; crumb.classList.toggle('on',!!s.crumb); q.textContent=''; ph.style.display=''; render(s,''); place(0); await wait(700);
+      ph.style.display='none'; for(let i=1;i<=s.q.length;i++){ q.textContent=s.q.slice(0,i); render(s,s.q.slice(0,i)); await wait(rand(70,150)); }
+      await wait(350); for(let i=1;i<=s.pick;i++){ place(i); await wait(260); }
+      await wait(300); const it=items.querySelectorAll('.cp-it')[s.pick]; it&&it.classList.add('cp-flash'); await wait(650); si=(si+1)%S.length; }
+  })();
+})();
+
+/* 09 editorial */
+(() => {
+  const el=T('editorial-longread');
+  el.innerHTML=`<div class="ed"><div class="top"><span>The Coastline · No. 07</span><span>Winter Issue</span></div>
+  <div><h5>The Last <i>Lighthouse</i> Keepers</h5><p class="deck">On a rock eleven miles out, three men still climb 114 steps every dusk to keep a light that no ship strictly needs.</p>
+  <div class="cols">When the fog comes in off the Atlantic it does not roll so much as arrive, all at once, the way a thought does. Tomas has watched it do this for thirty-one winters. He knows the sound it makes against the glass of the lantern room, a soft hiss like a match refusing to strike, and he knows that within the hour the horn will need him.</div></div>
+  <aside><svg viewBox="0 0 100 92" aria-hidden="true"><defs><linearGradient id="bm" x1="0" x2="1"><stop offset="0" stop-color="#ffd27a" stop-opacity=".9"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></linearGradient></defs>
+    <g class="beam"><path d="M50 22 L100 8 L100 36 Z" fill="url(#bm)"/><path d="M50 22 L0 8 L0 36 Z" fill="url(#bm)" transform="scale(-1 1) translate(-100 0)" opacity="0"/></g>
+    <path d="M44 30 L56 30 L60 86 L40 86 Z" fill="#1b1714"/><rect x="43" y="16" width="14" height="12" rx="1" fill="#ffd27a"/><path d="M41 16 L50 8 L59 16 Z" fill="#b4421f"/><rect x="40" y="28" width="20" height="3" fill="#1b1714"/><rect x="43" y="46" width="14" height="5" fill="#b4421f"/><rect x="42" y="64" width="16" height="5" fill="#b4421f"/><path d="M0 86 Q25 80 50 86 T100 86 L100 92 L0 92Z" fill="#1b1714"/></svg>
+  <q>The light doesn't care if anyone is watching. That's the whole job.</q></aside></div>`;
+})();
+
+/* 10 onboarding */
+(() => {
+  const el=T('onboarding-flow');
+  const steps=[
+    {b:'Welcome to Bloom',s:'Small habits, grown daily.',c1:'#ff8a5c',c2:'#ffd23d',btn:'Get started'},
+    {b:'What do you want to grow?',s:'Pick as many as you like.',c1:'#ff5c8a',c2:'#b18cff',btn:'Continue'},
+    {b:'When should we nudge you?',s:'Drag the dial to set a time.',c1:'#7af0ff',c2:'#2ee6a0',btn:'Set 7:30'},
+    {b:'You’re all set, Sam',s:'Your first bloom is waiting.',c1:'#c6ff3d',c2:'#2ee6a0',btn:'Let’s go'},
+  ];
+  el.innerHTML=`<div class="ob"><div class="ob-phone"><div class="ob-blob"></div><div class="ob-txt">${steps.map((s,i)=>`<div style="opacity:${i?0:1};transform:translateX(${i?100:0}%)"><b>${s.b}</b><span>${s.s}</span></div>`).join('')}</div><div class="ob-dots">${steps.map((_,i)=>`<i class="${i?'':'on'}"></i>`).join('')}</div><div class="ob-btn">${steps[0].btn}</div></div>
+  <div class="ob-side"><span class="ob-chip">Sleep better</span><span class="ob-chip">Read daily</span><span class="ob-chip">Move more</span><span class="ob-chip">Less screen</span></div></div><span class="label">CSS morphing</span>`;
+  const ph=el.querySelector('.ob-phone'), blob=el.querySelector('.ob-blob'), tx=[...el.querySelectorAll('.ob-txt div')], dots=[...el.querySelectorAll('.ob-dots i')], btn=el.querySelector('.ob-btn'), chips=[...el.querySelectorAll('.ob-chip')];
+  let cur=0, dir=1, nextT=2.4;
+  function go(i){ const prev=cur; cur=i; const s=steps[i]; ph.style.setProperty('--c1',s.c1); ph.style.setProperty('--c2',s.c2); blob.style.transform=`scale(${[1,.82,1.1,1.2][i]}) rotate(${i*40}deg)`;
+    tx.forEach((d,j)=>{ d.style.opacity=j===i?1:0; d.style.transform=`translateX(${j===i?0:(j<i?-100:100)}%)`; });
+    dots.forEach((d,j)=>d.classList.toggle('on',j===i)); btn.textContent=s.btn; chips.forEach((c,j)=>c.classList.toggle('on', i>=1 && (j===0||j===2) && i<3)); }
+  go(0);
+  loop(el,(t)=>{ if(t>nextT){ let n=cur+dir; if(n>=steps.length){dir=-1;n=cur-1;} if(n<0){dir=1;n=1;} go(n); nextT=t+2.2; } });
+})();
+
+if (reduce) { for(const l of loops) for(let i=0;i<40;i++) l.fn(i/30,1/30); }
+else requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
