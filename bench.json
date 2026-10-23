@@ -1,0 +1,42 @@
+{
+  "title": "Asklog Bench",
+  "repo": "https://github.com/asklog/asklog-bench",
+  "tasks": [
+    {
+      "id": "rocket-launch",
+      "title": "Rocket Launcher",
+      "codename": "ASCENT",
+      "summary": "Pre-flight checklist, T-10 countdown, ignition, a physics-based ascent with Max-Q and a gravity turn, staging, fairing separation, orbit, live telemetry and an abort sequence.",
+      "prompt": "rocket-launch/PROMPT.md",
+      "runs": [
+        {
+          "model": "Claude Opus 5.5",
+          "folder": "opus-5.5",
+          "harness": "Claude Code",
+          "effort": "xhigh",
+          "bytes": 119637,
+          "minutes": 43,
+          "cost": null
+        },
+        {
+          "model": "Kimi K3.1 Pro",
+          "folder": "kimi-k3.1-pro",
+          "harness": "OpenCode via OpenRouter",
+          "effort": "default",
+          "bytes": 92643,
+          "minutes": 23,
+          "cost": 1.27
+        },
+        {
+          "model": "GPT-6 Astra",
+          "folder": "gpt-6-astra",
+          "harness": "Codex",
+          "effort": "xhigh",
+          "bytes": 58717,
+          "minutes": 10,
+          "cost": null
+        }
+      ]
+    }
+  ]
+}

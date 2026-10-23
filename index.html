@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Asklog Bench</title>
+<meta name="description" content="Head-to-head UI tests of new models building single-file HTML apps from the identical prompt, side by side and live.">
+<meta name="theme-color" content="#171614">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="assets/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --chrome:#171614; --base:#1a1917; --surface:#201f1c; --raised:#292824;
+  --line:#2e2c28; --line2:#3e3b35; --hair:#232220;
+  --text:#eeeae2; --text2:#b3ada2; --mut:#979186;
+  --paper:#f8f7f4; --teal:#14b8a8;
+  --sage:#98c98b; --sage-ground:#1f2a1e; --straw:#cdb98e; --straw-ground:#2a261e; --error:#ea8776;
+  --ui:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+  --mark:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --gap:14px; --pad:20px; --r:14px;
+}
+*{box-sizing:border-box}
+html{background:var(--chrome);color-scheme:dark;-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100dvh;display:flex;flex-direction:column;background:var(--chrome);color:var(--text);font:400 14px/1.45 var(--ui);-webkit-font-smoothing:antialiased}
+button,a{font:inherit;color:inherit}
+a{text-decoration:none}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+svg{display:block;flex:none}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:18px;padding:0 var(--pad);height:58px;padding-top:env(safe-area-inset-top);background:color-mix(in srgb,var(--chrome) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hair)}
+.brand{display:flex;align-items:baseline;gap:10px;white-space:nowrap}
+.wm{font:700 19px/1 var(--mark);letter-spacing:-.02em;color:var(--paper)}
+.wm b{color:var(--teal);font-weight:700}
+.brand .sub{font:500 13px/1 var(--mono);color:var(--mut);letter-spacing:.02em;padding-left:10px;border-left:1px solid var(--line2)}
+.tasks{display:flex;gap:4px;min-width:0;overflow-x:auto;scrollbar-width:none;flex:1}
+.tasks::-webkit-scrollbar{display:none}
+.tab{display:flex;align-items:center;gap:8px;height:32px;padding:0 12px;border:1px solid transparent;border-radius:9px;background:none;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
+.tab:hover{color:var(--text);background:var(--surface)}
+.tab[aria-selected="true"]{color:var(--text);background:var(--raised);border-color:var(--line2)}
+.tab .n{font:500 11px/1 var(--mono);color:var(--mut)}
+.actions{display:flex;align-items:center;gap:6px}
+.btn{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border:1px solid var(--line2);border-radius:9px;background:var(--surface);color:var(--text);font-weight:500;font-size:13px;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s}
+.btn:hover{background:var(--raised);border-color:#4a463f}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:none;border-color:transparent;color:var(--text2)}
+.btn.ghost:hover{background:var(--surface);color:var(--text)}
+.btn svg{width:15px;height:15px}
+
+/* task intro */
+.intro{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:18px var(--pad) 16px}
+.kicker{display:flex;align-items:center;gap:10px;font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.kicker .code{color:var(--teal)}
+.intro h1{margin:8px 0 0;font:600 24px/1.15 var(--ui);letter-spacing:-.02em}
+.intro p{margin:6px 0 0;max-width:78ch;color:var(--text2)}
+.facts{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;flex:none}
+.chip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border:1px solid var(--line);border-radius:999px;font:500 11.5px/1 var(--mono);color:var(--text2);white-space:nowrap}
+.chip i{width:6px;height:6px;border-radius:50%;background:var(--sage)}
+
+/* panes */
+.grid{flex:1;min-height:600px;display:grid;grid-template-columns:repeat(var(--n,3),minmax(380px,1fr));gap:var(--gap);padding:0 var(--pad) var(--pad);overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 var(--pad);overscroll-behavior-x:contain}
+.pane{scroll-snap-align:start;min-width:0;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:var(--r);background:var(--base);overflow:hidden}
+.ph{display:grid;grid-template-columns:1fr auto;gap:10px 12px;padding:14px 14px 12px 16px;border-bottom:1px solid var(--hair);background:var(--surface)}
+.who{min-width:0}
+.who .top{display:flex;align-items:center;gap:9px}
+.dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--straw);box-shadow:0 0 0 3px var(--straw-ground);animation:pulse 1.2s ease-in-out infinite}
+.pane.live .dot{background:var(--sage);box-shadow:0 0 0 3px var(--sage-ground);animation:none}
+.pane.err .dot{background:var(--error);box-shadow:none;animation:none}
+@keyframes pulse{50%{opacity:.35}}
+.who h2{margin:0;font:600 15.5px/1.2 var(--ui);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rig{margin-top:5px;font:400 12px/1.3 var(--mono);color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rig .eff{color:var(--text2)}
+.tools{display:flex;gap:2px;align-self:start}
+.icon{display:grid;place-items:center;width:32px;height:32px;border:0;border-radius:8px;background:none;color:var(--text2);cursor:pointer;transition:background .15s,color .15s}
+.icon:hover{background:var(--raised);color:var(--text)}
+.icon svg{width:16px;height:16px}
+.stats{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.stats div{padding:8px 10px;min-width:0}
+.stats div+div{border-left:1px solid var(--line)}
+.stats dt{font:500 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.stats dd{margin:6px 0 0;font:500 14px/1 var(--mono);color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stats dd.na{color:var(--mut);font-size:12.5px}
+.frame{position:relative;flex:1;min-height:0;background:#0d0c0b}
+.frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:#0d0c0b}
+.veil{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;font:500 12px/1 var(--mono);color:var(--mut);letter-spacing:.04em;transition:opacity .35s}
+.pane.live .veil{opacity:0;visibility:hidden}
+
+/* maximised pane */
+.pane.max{position:fixed;inset:0;z-index:40;border:0;border-radius:0;padding-top:env(safe-area-inset-top)}
+.pane.max .ph{grid-template-columns:minmax(0,auto) 1fr auto;align-items:center;padding:10px 14px 10px 18px}
+.pane.max .stats{grid-column:auto;grid-row:1;grid-template-columns:repeat(3,auto);justify-self:start}
+.pane.max .stats div{padding:6px 12px}
+body.has-max{overflow:hidden}
+
+/* prompt dialog */
+dialog{width:min(760px,calc(100vw - 32px));max-height:min(80dvh,720px);padding:0;border:1px solid var(--line2);border-radius:16px;background:var(--surface);color:var(--text);box-shadow:0 40px 120px -20px rgba(0,0,0,.7)}
+dialog::backdrop{background:rgba(10,9,8,.66);backdrop-filter:blur(4px)}
+dialog[open]{display:flex;flex-direction:column}
+.dh{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 14px 14px 20px;border-bottom:1px solid var(--line)}
+.dh h3{margin:0;font:600 15px/1.2 var(--ui)}
+.dh .kicker{margin-bottom:6px}
+.dh .row{display:flex;gap:6px}
+.db{overflow:auto;padding:18px 20px 22px}
+.db p{margin:0 0 14px;color:var(--text2)}
+.db pre{margin:0;white-space:pre-wrap;word-break:break-word;font:400 12.5px/1.65 var(--mono);color:var(--text)}
+
+.empty{display:grid;place-items:center;flex:1;padding:40px var(--pad);text-align:center;color:var(--text2)}
+.empty code{font-family:var(--mono);color:var(--text);background:var(--surface);padding:2px 6px;border-radius:6px}
+
+/* narrow: stack the panes */
+@media (max-width:759px){
+  :root{--pad:16px;--gap:16px}
+  .bar{flex-wrap:wrap;height:auto;row-gap:0;padding-top:calc(10px + env(safe-area-inset-top));padding-bottom:0}
+  .brand{order:1;height:32px;align-items:center}
+  .actions{order:2;margin-left:auto}
+  .tasks{order:3;flex-basis:100%;margin:8px calc(var(--pad) * -1) 0;padding:0 var(--pad) 10px}
+  .actions .label{display:none}
+  .actions .btn{width:34px;padding:0;justify-content:center}
+  .intro{flex-direction:column;align-items:flex-start;gap:12px;padding-top:16px}
+  .intro h1{font-size:21px}
+  .facts{justify-content:flex-start}
+  .grid{display:flex;flex-direction:column;overflow:visible;min-height:0}
+  .frame{flex:none;height:min(78svh,760px)}
+  .pane.max .frame{flex:1;height:auto}
+  .pane.max .ph{grid-template-columns:1fr auto}
+  .pane.max .stats{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .grid{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="brand" href="./" aria-label="Asklog Bench home"><span class="wm" aria-hidden="true">ask<b>&gt;</b>log</span><span class="sub">bench</span></a>
+  <nav class="tasks" id="tasks" role="tablist" aria-label="Tasks"></nav>
+  <div class="actions">
+    <button class="btn ghost" id="promptBtn" type="button" title="Show the prompt">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 2.5h6l3 3v8h-9z"/><path d="M9.5 2.5v3h3M5.5 8.5h5M5.5 11h3.5"/></svg>
+      <span class="label">Prompt</span>
+    </button>
+    <button class="btn" id="reloadAll" type="button" title="Reload all panes">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 8a5 5 0 1 1-1.5-3.57"/><path d="M13 2.5v3h-3"/></svg>
+      <span class="label">Reload all</span>
+    </button>
+    <a class="btn ghost" id="repo" href="https://github.com/asklog/asklog-bench" target="_blank" rel="noopener" title="Source on GitHub">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 .2a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.71 1.22 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.66 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 .2Z"/></svg>
+      <span class="label">GitHub</span>
+    </a>
+  </div>
+</header>
+
+<section class="intro" id="intro" hidden>
+  <div>
+    <div class="kicker"><span id="taskNo"></span><span class="code" id="taskCode"></span></div>
+    <h1 id="taskTitle"></h1>
+    <p id="taskSummary"></p>
+  </div>
+  <div class="facts" id="facts"></div>
+</section>
+
+<main class="grid" id="grid" aria-live="polite"></main>
+
+<dialog id="promptDlg" aria-labelledby="promptTitle">
+  <div class="dh">
+    <div><div class="kicker">Identical prompt</div><h3 id="promptTitle">Prompt</h3></div>
+    <div class="row">
+      <button class="btn" id="copyPrompt" type="button">Copy</button>
+      <button class="icon" id="closePrompt" type="button" aria-label="Close">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="db">
+    <p>Every model gets this text verbatim; only <code>&lt;model-folder&gt;</code> in the last sentence changes.</p>
+    <pre id="promptText">Loading...</pre>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const ICON = {
+    reload: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 8a5 5 0 1 1-1.5-3.57"/><path d="M13 2.5v3h-3"/></svg>',
+    expand: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10"/></svg>',
+    shrink: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5V6H2.5M13.5 6H10V2.5M10 13.5V10h3.5M2.5 10H6v3.5"/></svg>',
+    open: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5"/><path d="M12 9.5v4H2.5V4h4"/></svg>'
+  };
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const kb = b => (b / 1000).toFixed(1) + ' KB';
+  const usd = c => '$' + c.toFixed(2);
+
+  let bench, task, promptCache = {};
+
+  const parseHash = () => {
+    const [t, m] = decodeURIComponent(location.hash.slice(1)).split('/');
+    return { t, m };
+  };
+  const setHash = (t, m) => {
+    const h = '#' + t + (m ? '/' + m : '');
+    if (location.hash !== h) history.replaceState(null, '', h);
+  };
+
+  function renderTabs() {
+    $('#tasks').innerHTML = bench.tasks.map((t, i) =>
+      `<button class="tab" role="tab" type="button" data-id="${esc(t.id)}" aria-selected="${t === task}">
+        <span class="n">${String(i + 1).padStart(2, '0')}</span>${esc(t.title)}</button>`).join('');
+  }
+
+  function renderTask() {
+    const i = bench.tasks.indexOf(task);
+    $('#intro').hidden = false;
+    $('#taskNo').textContent = 'Task ' + String(i + 1).padStart(2, '0');
+    $('#taskCode').textContent = task.codename || '';
+    $('#taskTitle').textContent = task.title;
+    $('#taskSummary').textContent = task.summary || '';
+    $('#facts').innerHTML = [
+      `<span class="chip"><i></i>${task.runs.length} models live</span>`,
+      '<span class="chip">identical prompt</span>',
+      '<span class="chip">one index.html each</span>'
+    ].join('');
+    document.title = task.title + ' · Asklog Bench';
+
+    const grid = $('#grid');
+    grid.style.setProperty('--n', task.runs.length);
+    grid.innerHTML = task.runs.map(r => {
+      const src = `${task.id}/${r.folder}/index.html`;
+      const cost = r.cost != null ? `<dd>${usd(r.cost)}</dd>` : '<dd class="na" title="Ran on a subscription plan, not metered per run">unmetered</dd>';
+      return `<article class="pane" data-folder="${esc(r.folder)}">
+        <header class="ph">
+          <div class="who">
+            <div class="top"><span class="dot" aria-hidden="true"></span><h2>${esc(r.model)}</h2></div>
+            <div class="rig" title="${esc(r.harness)} · ${esc(r.effort)}">${esc(r.harness)} · <span class="eff">${esc(r.effort)}</span></div>
+          </div>
+          <div class="tools">
+            <button class="icon" type="button" data-act="reload" aria-label="Reload ${esc(r.model)}" title="Reload">${ICON.reload}</button>
+            <button class="icon" type="button" data-act="max" aria-label="Full screen ${esc(r.model)}" title="Full screen">${ICON.expand}</button>
+            <a class="icon" href="${esc(src)}" target="_blank" rel="noopener" aria-label="Open ${esc(r.model)} in a new tab" title="Open in new tab">${ICON.open}</a>
+          </div>
+          <dl class="stats">
+            <div><dt>Size</dt><dd>${kb(r.bytes)}</dd></div>
+            <div><dt>Time</dt><dd>~${r.minutes} min</dd></div>
+            <div><dt>Cost</dt>${cost}</div>
+          </dl>
+        </header>
+        <div class="frame">
+          <iframe src="${esc(src)}" title="${esc(task.title)} by ${esc(r.model)}" allow="fullscreen; autoplay" loading="lazy"></iframe>
+          <div class="veil">loading ${esc(r.folder)}</div>
+        </div>
+      </article>`;
+    }).join('');
+    grid.querySelectorAll('.pane').forEach(p => {
+      p.querySelector('iframe').addEventListener('load', () => p.classList.add('live'));
+    });
+    grid.scrollLeft = 0;
+  }
+
+  function selectTask(id, focus) {
+    const next = bench.tasks.find(t => t.id === id) || bench.tasks[0];
+    if (next !== task) { task = next; renderTabs(); renderTask(); }
+    setMax(focus ? $(`.pane[data-folder="${CSS.escape(focus)}"]`) : null);
+  }
+
+  function setMax(pane) {
+    document.querySelectorAll('.pane.max').forEach(p => {
+      if (p === pane) return;
+      p.classList.remove('max');
+      const b = p.querySelector('[data-act="max"]');
+      b.innerHTML = ICON.expand; b.title = 'Full screen'; b.setAttribute('aria-label', b.getAttribute('aria-label').replace('Exit full screen', 'Full screen'));
+    });
+    if (pane) {
+      pane.classList.add('max');
+      const b = pane.querySelector('[data-act="max"]');
+      b.innerHTML = ICON.shrink; b.title = 'Exit full screen'; b.setAttribute('aria-label', b.getAttribute('aria-label').replace('Full screen', 'Exit full screen'));
+    }
+    document.body.classList.toggle('has-max', !!pane);
+    setHash(task.id, pane && pane.dataset.folder);
+  }
+
+  function reload(pane) {
+    const f = pane.querySelector('iframe');
+    pane.classList.remove('live');
+    try { f.contentWindow.location.reload(); }
+    catch { f.src = f.getAttribute('src'); }
+  }
+
+  async function openPrompt() {
+    const dlg = $('#promptDlg');
+    $('#promptTitle').textContent = task.title + (task.codename ? ' "' + task.codename + '"' : '');
+    dlg.showModal();
+    if (!promptCache[task.id]) {
+      try {
+        const md = await (await fetch(task.prompt)).text();
+        const m = md.match(/```text\n([\s\S]*?)\n```/);
+        promptCache[task.id] = m ? m[1] : md;
+      } catch { $('#promptText').textContent = 'Could not load ' + task.prompt; return; }
+    }
+    $('#promptText').textContent = promptCache[task.id];
+  }
+
+  // events
+  $('#tasks').addEventListener('click', e => {
+    const b = e.target.closest('.tab'); if (b) selectTask(b.dataset.id);
+  });
+  $('#tasks').addEventListener('keydown', e => {
+    if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+    const i = bench.tasks.indexOf(task), n = bench.tasks.length;
+    const t = bench.tasks[(i + (e.key === 'ArrowRight' ? 1 : n - 1)) % n];
+    selectTask(t.id); $(`.tab[data-id="${CSS.escape(t.id)}"]`).focus();
+  });
+  $('#grid').addEventListener('click', e => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const pane = b.closest('.pane');
+    if (b.dataset.act === 'reload') reload(pane);
+    else setMax(pane.classList.contains('max') ? null : pane);
+  });
+  $('#reloadAll').addEventListener('click', () => document.querySelectorAll('.pane').forEach(reload));
+  $('#promptBtn').addEventListener('click', () => task && openPrompt());
+  $('#closePrompt').addEventListener('click', () => $('#promptDlg').close());
+  $('#promptDlg').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
+  $('#copyPrompt').addEventListener('click', async e => {
+    const b = e.currentTarget;
+    try { await navigator.clipboard.writeText($('#promptText').textContent); b.textContent = 'Copied'; }
+    catch { b.textContent = 'Copy failed'; }
+    setTimeout(() => { b.textContent = 'Copy'; }, 1400);
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.body.classList.contains('has-max') && !$('#promptDlg').open) setMax(null);
+  });
+  addEventListener('hashchange', () => { const h = parseHash(); selectTask(h.t, h.m); });
+
+  // boot
+  fetch('bench.json', { cache: 'no-cache' })
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(data => {
+      bench = data;
+      if (bench.repo) $('#repo').href = bench.repo;
+      const h = parseHash();
+      selectTask(h.t, h.m);
+    })
+    .catch(() => {
+      $('#grid').outerHTML = `<div class="empty"><div>Could not load <code>bench.json</code>.<br>
+        Browsers block that from <code>file://</code>, so serve the folder instead:
+        <code>python3 -m http.server</code> then open <code>localhost:8000</code>.<br>
+        Each build also opens on its own, straight from disk.</div></div>`;
+    });
+})();
+</script>
+</body>
+</html>
