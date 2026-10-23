@@ -88,6 +88,7 @@ h2 em{font-family:var(--serif);font-weight:400;font-style:italic}
 .card{position:relative;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:24px;background:var(--card);overflow:hidden;transition:border-color .25s,transform .25s,box-shadow .25s}
 .card:hover{border-color:color-mix(in srgb,var(--a) 40%,transparent);box-shadow:0 30px 80px -40px color-mix(in srgb,var(--a) 45%,transparent)}
 .card.picked{border-color:var(--a);box-shadow:0 0 0 1px var(--a),0 30px 80px -40px color-mix(in srgb,var(--a) 70%,transparent)}
+.card.h2h.rec::after{display:none}
 .card.rec::after{content:"In budget run";position:absolute;top:14px;right:14px;z-index:5;font:700 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:7px 9px;border-radius:8px;background:rgba(0,0,0,.6);color:var(--lime);border:1px solid rgba(198,255,61,.35);backdrop-filter:blur(8px)}
 .teaser{position:relative;aspect-ratio:16/10;overflow:hidden;background:#000;container-type:inline-size;isolation:isolate}
 .teaser canvas{display:block;width:100%;height:100%}
@@ -250,12 +251,56 @@ footer{margin-top:72px;color:var(--dim);font:500 12px/1.6 var(--mono)}
 .tr-head b{display:block;font:800 22px/1.1 var(--sans);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .tr-head .up{color:#2ee6a0}.tr-head .dn{color:#ff5c6c}
 
+/* model toggle */
+.seg{display:inline-flex;gap:4px;padding:4px;border-radius:14px;border:1px solid var(--line2);background:rgba(255,255,255,.03)}
+.seg button{appearance:none;border:0;cursor:pointer;padding:9px 14px;border-radius:10px;background:transparent;color:var(--mut);font:600 13px/1 var(--mono);transition:background .2s,color .2s}
+.seg button.on{background:var(--fg);color:#08080a}
+.outrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:26px;font:500 13px/1.4 var(--mono);color:var(--mut)}
+.outrow code{color:var(--fg)}
+/* head-to-head card */
+.h2h{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+.h2h .teaser{aspect-ratio:auto;min-height:100%}
+.h2h .teaser canvas{position:absolute;inset:0}
+.h2h-links{display:flex;gap:10px;flex-wrap:wrap}
+.blink{display:inline-flex;align-items:center;gap:8px;padding:11px 14px;border-radius:12px;font:600 13px/1 var(--sans);text-decoration:none;border:1px solid var(--line2);background:rgba(255,255,255,.04);color:var(--fg)}
+.blink:hover{background:rgba(255,255,255,.08)}
+.blink.off{color:var(--dim);border-style:dashed;pointer-events:none}
+.blink i{width:8px;height:8px;border-radius:50%;background:var(--dim)}
+.blink.ready i{background:#2ee6a0;box-shadow:0 0 10px #2ee6a0}
+.blink.building i{background:var(--warn);animation:blink 1.2s infinite}
+.rk-count{position:absolute;left:0;right:0;top:38%;text-align:center;font:900 22cqw/1 var(--sans);letter-spacing:-.05em;color:#fff;opacity:0;pointer-events:none;z-index:2;text-shadow:0 0 6cqw rgba(255,106,61,.6)}
+/* comparison */
+.vs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:980px){.vs{grid-template-columns:1fr}}
+.mp{border:1px solid var(--line);border-radius:20px;background:var(--bg2);padding:20px;display:flex;flex-direction:column;gap:14px}
+.mp-h{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.mp .blink{align-self:flex-start}
+.mp-h b{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.mp-h code{display:block;font:500 12px/1.4 var(--mono);color:var(--mut);margin-top:4px;word-break:break-all}
+.mp dl{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;margin:0;font:500 13px/1.3 var(--mono)}
+.mp dt{color:var(--dim)} .mp dd{margin:0;color:var(--fg);text-align:right}
+.score{width:100%;table-layout:fixed;border-collapse:collapse;margin-top:16px;font-size:14px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--bg2)}
+.score th:first-child{width:30%}.score th.w{width:12%}
+.score th,.score td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left}
+.score th{font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.score td.w{font:500 12px/1 var(--mono);color:var(--dim);white-space:nowrap}
+.score select{appearance:none;background:rgba(255,255,255,.05);color:var(--fg);border:1px solid var(--line2);border-radius:9px;padding:8px 26px 8px 12px;font:600 14px/1 var(--mono);background-image:linear-gradient(45deg,transparent 50%,var(--mut) 50%),linear-gradient(135deg,var(--mut) 50%,transparent 50%);background-position:calc(100% - 13px) 50%,calc(100% - 8px) 50%;background-size:5px 5px;background-repeat:no-repeat;cursor:pointer}
+.score tfoot td{font:800 22px/1 var(--sans);letter-spacing:-.02em;border-bottom:0}
+.score tfoot td.lead{color:var(--lime)}
 @media (max-width:980px){
+  .h2h{grid-template-columns:1fr}
+  .h2h .teaser{aspect-ratio:16/10;min-height:0}
   .grid{grid-template-columns:1fr}
   .budget{grid-template-columns:1fr}
   .rubric{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:640px){
+  .vs{grid-template-columns:1fr}
+  .score th,.score td{padding:10px 8px}
+  .score td.w{display:none}
+  .score select{padding:8px 20px 8px 8px;background-position:calc(100% - 10px) 50%,calc(100% - 5px) 50%}
+  .score th{font-size:10px;letter-spacing:.04em}
+  .score th.w{display:none}
   main{padding:0 16px 130px}
   header{padding:40px 0 24px}
   .stats{grid-template-columns:repeat(2,1fr)}
@@ -293,7 +338,16 @@ footer{margin-top:72px;color:var(--dim);font:500 12px/1.6 var(--mono)}
     <div class="stat"><b>0</b><span>build steps</span></div>
     <div class="stat"><b>$12</b><span>hard budget</span></div>
   </div>
+  <div class="outrow"><span>Copy prompts for</span><div class="seg" id="seg"></div><span>→ output to <code id="outPath">&lt;task&gt;/kimi-k3.1-pro/index.html</code></span></div>
 </header>
+
+<section id="head-to-head">
+  <div class="sec-h">
+    <div><div class="kicker">H2H · Head-to-head</div><h2>Rocket <em>launcher.</em></h2></div>
+    <p>Three models in their own harnesses, all given the exact text in <code class="mono">rocket-launch/PROMPT.md</code>. Only the output folder changes: <code class="mono">rocket-launch/&lt;model&gt;/index.html</code>.</p>
+  </div>
+  <div id="h2hCard"></div>
+</section>
 
 <section id="budget">
   <div class="sec-h">
@@ -304,12 +358,12 @@ footer{margin-top:72px;color:var(--dim);font:500 12px/1.6 var(--mono)}
     <div class="panel">
       <div class="kicker" style="margin-bottom:14px">Recommended run</div>
       <ol class="run" id="run"></ol>
-      <div class="run-total"><span>Core three <b>~$6.50</b> · worst <b>~$9.00</b></span><span>#4 runs only if spend ≤ <b>$7.00</b></span></div>
+      <div class="run-total"><span>Core three <b>~$7.50</b> · worst <b>~$9.00</b></span><span>#4 runs only if spend ≤ <b>$7.00</b></span></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
-        <a class="btn btn-lime" href="#c-aurora-shader">Start with #1: copy its prompt ↓</a>
+        <a class="btn btn-lime" href="#c-rocket-launch">Start with #1: copy its prompt ↑</a>
         <button class="btn btn-ghost" id="pickRun" type="button">Pick the budget run (optional)</button>
       </div>
-      <p class="rules-note">Order matters: the cheapest, most visual piece goes first so a bad result costs the least. The two difficulty-5 builds (keyboard, design canvas) are left out because they can cost $3-5 each.</p>
+      <p class="rules-note">The rocket head-to-head goes first and fills the wow/visual slot, so the aurora shader drops out of the run. The two difficulty-5 builds (keyboard, design canvas) are left out because they can cost $3-5 each.</p>
     </div>
     <div class="panel" id="spend">
       <div class="kicker">Running spend on the OpenRouter key</div>
@@ -332,6 +386,16 @@ footer{margin-top:72px;color:var(--dim);font:500 12px/1.6 var(--mono)}
   <div class="grid" id="grid"></div>
 </section>
 
+<section id="compare">
+  <div class="sec-h">
+    <div><div class="kicker">H2H · Side by side</div><h2>Opus vs Kimi <em>vs GPT.</em></h2></div>
+    <p>Open each build, run the same steps (checklist, launch, throttle, abort, phone width), then score all three with the rubric. The totals update live, and Send scores reports them back.</p>
+  </div>
+  <div class="vs" id="vs"></div>
+  <table class="score" id="scoreT"></table>
+  <div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="btn btn-lime" id="sendScores" type="button">Send scores</button></div>
+</section>
+
 <section id="rubric">
   <div class="sec-h">
     <div><div class="kicker">Scoring</div><h2>The <em>rubric.</em></h2></div>
@@ -349,14 +413,31 @@ footer{margin-top:72px;color:var(--dim);font:500 12px/1.6 var(--mono)}
   <div class="rules" id="rulesText"></div>
 </section>
 
-<footer>model-testing · .asklog/pages/ui-challenges.html · apps land in apps/&lt;slug&gt;/index.html</footer>
+<footer>model-testing · .asklog/pages/ui-challenges.html · builds land in &lt;task&gt;/&lt;model&gt;/index.html, e.g. rocket-launch/opus-5.5/index.html</footer>
 </main>
 
 <div class="tray" id="tray"><div class="t"><span id="trayN">0 picked</span><small id="trayL"></small></div><button class="btn btn-lime" id="send" type="button">Send picks</button></div>
 <div class="toast" id="toast"></div>
 
 <script>
-const RULES = slug => `Hard requirements: create the folder apps/${slug}/ and put everything in ONE self-contained file, apps/${slug}/index.html. No build step, no npm, no bundler, no other files. External JS/CSS libraries only via <script>/<link> tags from cdnjs.cloudflare.com, cdn.jsdelivr.net or unpkg.com; web fonts from Google Fonts are fine. No external images, 3D models or audio files: generate everything procedurally (SVG, canvas, WebGL, Web Audio). It must look premium and intentional, work from 360px phone width up to a large desktop with mouse, touch and keyboard, respect prefers-reduced-motion, run smoothly at 60fps on a laptop, and open straight from the file system with zero console errors. Work efficiently: plan briefly, then write the complete file in one go; do not scaffold, install packages or start servers. After writing, re-read the file once, fix any real bugs, and stop with a short summary of what you built and anything you cut.`;
+const SHARED = `Hard requirements: put everything in ONE self-contained index.html file - no build step, no npm, no bundler, no other files. External JS/CSS libraries only via <script>/<link> tags from cdnjs.cloudflare.com, cdn.jsdelivr.net or unpkg.com; web fonts from Google Fonts are fine. No external images, 3D models or audio files: generate everything procedurally (SVG, canvas, WebGL, Web Audio). It must look premium and intentional, work from 360px phone width up to a large desktop with mouse, touch and keyboard, respect prefers-reduced-motion, run smoothly at 60fps on a laptop, and open straight from the file system with zero console errors. Work efficiently: plan briefly, then write the complete file in one go; do not scaffold, install packages or start servers. After writing, re-read the file once, fix any real bugs, and stop with a short summary of what you built and anything you cut.`;
+const MODELS = [{id:'kimi-k3.1-pro',name:'Kimi K3.1 Pro',harness:'OpenCode'},{id:'opus-5.5',name:'Opus 5.5',harness:'Claude Code'},{id:'gpt-6-astra',name:'GPT-6 Astra',harness:'Codex'}];
+let MODEL = 'kimi-k3.1-pro';
+const RULES = (slug, model=MODEL) => SHARED + ` Write everything to ${slug}/${model}/index.html.`;
+
+const ROCKET = {slug:'rocket-launch', title:'Ascent rocket launcher', a:'#ff6a3d', d:4, cost:'$2-3', rec:1, role:'Head-to-head · wow', h2h:true,
+  pitch:'Checklist, countdown, ignition, staging and orbit, with live telemetry the whole way up.',
+  tags:['Particles + fire/smoke','Parallax + camera','Simulation + telemetry','Choreographed sequences','Control-panel UI'],
+  wow:'T-0: the flame lights, smoke floods the pad, the screen shakes, and the sky fades from blue to black as stage 1 tumbles away.',
+  prompt:`Build "ASCENT", a single-page rocket launch simulator. Scene: a procedurally drawn two-stage rocket with a payload fairing (SVG or canvas, no image files) standing on a launch pad with a service tower and umbilical arms, at dusk with distant terrain. Launch control panel in a polished mission-control style: a pre-flight checklist of 6 items (Range clear, Weather go, Propellant load, LOX load, Guidance internal, Flight termination armed) that the user confirms one by one, each with an animated GO confirmation; the propellant steps visibly fill the tank gauges, and the launch button stays locked until every item is GO. A throttle control (60-100%) that changes thrust, flame size and acceleration in real time. A T-10 countdown with large animated digits, venting vapour from the rocket during the count, and the umbilical arms swinging away at T-3. Ignition at T-0: an engine flame with a bright flickering core, additive glow particles and shock diamonds; billowing smoke that spreads sideways along the pad and lingers; screen shake that scales with thrust and fades with altitude. Ascent: a simple but plausible simulation (thrust, mass dropping as propellant burns, gravity, drag that falls with air density, a MAX-Q callout) with a gentle gravity turn that tilts the rocket; the camera follows the rocket. Parallax sky: ground, several cloud layers the rocket punches through, a sky gradient that shifts from day blue through deep indigo to black space as altitude rises, stars fading in, and the curve of the Earth appearing at the end. Staging: when stage 1 runs dry, MECO, the spent stage separates and tumbles away with a fading flame, a separation puff, then second-stage ignition; later the fairing splits into two halves that drift away; finish with an orbital insertion banner and a mission summary (max altitude, max velocity, max g, mission time) plus a Reset button. Live telemetry: altitude, velocity, fuel per stage and g-force as animated gauges (dials and bar meters), a small altitude-over-time line chart, a T+ mission clock, and an event log (Liftoff, Max-Q, MECO, Stage separation, Second-stage ignition, Fairing separation, SECO, Orbit). Controls: an Abort button during ascent that triggers a dramatic launch-escape sequence for the capsule, time warp (1x / 2x / 4x), and a mute toggle. Sound is optional; if included, synthesise it with Web Audio (countdown beeps, rumble) and start it only after a user gesture. On phones the control panel becomes a bottom sheet and the telemetry compacts; mouse, touch and keyboard all work (Space advances the checklist and launches).`};
+/* Build status per model folder; updated by Chief as builds land. */
+const BUILDS = {
+  'opus-5.5':      { url: null, status: 'building', cost: null, time: null, turns: null, size: null },
+  'kimi-k3.1-pro': { url: null, status: 'waiting',  cost: null, time: null, turns: null, size: null },
+  'gpt-6-astra':   { url: null, status: 'building', cost: null, time: null, turns: null, size: null },
+};
+const SCORES = { 'opus-5.5': {}, 'kimi-k3.1-pro': {}, 'gpt-6-astra': {} };
+const H2H_ORDER = ['opus-5.5','kimi-k3.1-pro','gpt-6-astra'];
 
 const CH = [
  {slug:'keyboard-configurator', title:'Keyforge 3D configurator', a:'#c6ff3d', d:5, cost:'$3-5',
@@ -364,7 +445,7 @@ const CH = [
   tags:['three.js scene building','PBR materials + lighting','Web Audio synthesis','UI to 3D state sync'],
   wow:'Type a sentence on your real keyboard and the 3D board clacks in sync, then switch colourway and watch the theme ripple across the keys.',
   prompt:`Build "KEYFORGE", a 3D mechanical keyboard configurator in three.js. Procedurally model a 75% keyboard (no external models): a chamfered aluminium case, a plate, and ~84 individual sculpted keycaps with legends drawn to a canvas texture. Lighting: a soft studio setup with a generated environment map, contact shadow under the board, and an RGB underglow strip. A glassy, well-typeset side panel configures: case finish (black, silver, lavender, lime, each with distinct metalness/roughness), 5 named keycap colourways that animate key-by-key in a wave when switched, switch type (linear / tactile / clicky) each with its own synthesised Web Audio sound, and underglow colour. Pressing keys on the real keyboard depresses the matching 3D key with a spring and plays the switch sound; clicking 3D keys does the same. Orbit camera with damping plus 3 preset angles with tweened transitions. A price summary with an odometer number animation and an "Add to cart" success animation. On phones the panel becomes a bottom sheet.`},
- {slug:'aurora-shader', title:'Aurora Signal shader landing', a:'#7af0ff', d:4, cost:'$1.5-2.5', rec:1, role:'Wow / visual',
+ {slug:'aurora-shader', title:'Aurora Signal shader landing', a:'#7af0ff', d:4, cost:'$1.5-2.5',
   pitch:'A GPU shader you can stir with your cursor, wrapped in a landing page.',
   tags:['GLSL fragment shaders','Kinetic typography','Scroll choreography','Perf budgeting'],
   wow:'Moving the mouse visibly stirs the aurora around the cursor, and scrolling morphs the whole colour world in one continuous motion.',
@@ -438,6 +519,8 @@ const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const diffWord = ['','Warm-up','Warm-up','Medium','Hard','Brutal'];
 const fullPrompt = c => c.prompt + ' ' + RULES(c.slug);
+const promptHTML = c => `${esc(c.prompt)} <span class="rule">${esc(SHARED)}</span> <b style="color:var(--fg);font-weight:600">${esc('Write everything to '+c.slug+'/'+MODEL+'/index.html.')}</b>`;
+const ALL = [ROCKET, ...CH];
 const ICON_COPY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
 const ICON_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
 async function copyText(t){
@@ -450,7 +533,7 @@ async function copyText(t){
 let tt; function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),2600); }
 
 /* ---------- budget run ---------- */
-const recs = CH.filter(c=>c.rec).sort((a,b)=>a.rec-b.rec);
+const recs = ALL.filter(c=>c.rec).sort((a,b)=>a.rec-b.rec);
 $('#run').innerHTML = recs.map(c=>`<li class="${c.rec===4?'opt':''}" style="--a:${c.a}"><span class="n">${c.rec}</span><div><h4>${esc(c.title)}<small>${c.role}</small></h4><p>${esc(c.pitch)}</p></div><div class="cost">${c.cost}<small>${c.rec===4?'if spend ≤ $7':'est.'}</small></div></li>`).join('');
 
 /* ---------- spend panel ---------- */
@@ -464,7 +547,7 @@ if (SPEND.usage != null) {
   else st.textContent = money(stopAt - SPEND.usage) + ' left before the ' + (stopAt<11?'$10 key cap':'stop line');
   const rows = [];
   if (SPEND.baseline != null) rows.push(`<li><span>Before the test</span><b>${money(SPEND.baseline)}</b></li>`);
-  SPEND.runs.forEach(r=>{ const c=CH.find(x=>x.slug===r.slug); rows.push(`<li><span>${esc(c?c.title:r.slug)}</span><b>${r.cost!=null?'+'+money(r.cost):'running'}</b></li>`); });
+  SPEND.runs.forEach(r=>{ const c=ALL.find(x=>x.slug===r.slug); rows.push(`<li><span>${esc(c?c.title:r.slug)}</span><b>${r.cost!=null?'+'+money(r.cost):'running'}</b></li>`); });
   $('#spendRows').innerHTML = rows.join('');
   if (SPEND.checkedAt) $('#spendChecked').textContent = 'Last checked ' + new Date(SPEND.checkedAt).toLocaleString([], {hour:'2-digit',minute:'2-digit',month:'short',day:'numeric'}) + '. No more prompts once usage reaches $11 (or the $10 key cap).';
 }
@@ -480,20 +563,68 @@ $('#grid').innerHTML = CH.map((c,i)=>`
     <p class="pitch">${esc(c.pitch)}</p>
     <div class="tags">${c.tags.map(t=>`<span>${esc(t)}</span>`).join('')}</div>
     <div class="wow"><b>The wow moment</b>${esc(c.wow)}</div>
-    <div class="pbox"><div class="pbar"><span>Prompt for Kimi<small>${fullPrompt(c).split(/\s+/).length} words</small></span><button class="btn copy" type="button" data-copy="${c.slug}">${ICON_COPY}<span>Copy prompt</span></button></div>
-      <div class="prompt"><p>${esc(c.prompt)} <span class="rule">${esc(RULES(c.slug))}</span></p></div></div>
-    <div class="foot"><span class="slug">Est. cost <b>${c.cost}</b> · apps/${c.slug}/</span><button class="btn pick" type="button" data-pick="${c.slug}" title="Optional: tell Chief which one you are running">Pick this (optional)</button></div>
+    <div class="pbox"><div class="pbar"><span>Prompt<small>${fullPrompt(c).split(/\s+/).length} words</small></span><button class="btn copy" type="button" data-copy="${c.slug}">${ICON_COPY}<span>Copy prompt</span></button></div>
+      <div class="prompt"><p data-p="${c.slug}">${promptHTML(c)}</p></div></div>
+    <div class="foot"><span class="slug">Est. Kimi cost <b>${c.cost}</b> · <span class="outp" data-slug="${c.slug}">${c.slug}/${MODEL}/</span></span><button class="btn pick" type="button" data-pick="${c.slug}" title="Optional: tell Chief which one you are running">Pick this (optional)</button></div>
   </div>
 </article>`).join('');
 
 $('#rb').innerHTML = RUBRIC.map(r=>`<div class="rb"><div class="w">${r.w}<small>% weight</small></div><h4>${r.h}</h4><dl><dt>1</dt><dd>${r.lo}</dd><dt class="hi">5</dt><dd>${r.hi}</dd></dl></div>`).join('');
-$('#rulesText').textContent = RULES('<slug>');
+$('#rulesText').textContent = SHARED + ' Write everything to <task>/<model-folder>/index.html.';
+
+/* ---------- head-to-head card ---------- */
+const linkHTML = id => { const b=BUILDS[id], m=MODELS.find(x=>x.id===id);
+  if (b.url) return `<a class="blink ready" href="${b.url}" target="_blank" rel="noopener"><i></i>Open ${m.name} build ↗</a>`;
+  return `<span class="blink off ${b.status==='building'?'building':''}"><i></i>${m.name}: ${b.status==='building'?'building…':'not started'}</span>`; };
+{
+  const c=ROCKET;
+  $('#h2hCard').innerHTML = `<article class="card h2h rec" id="c-${c.slug}" data-slug="${c.slug}" style="--a:${c.a}">
+  <div class="teaser" data-teaser="${c.slug}"></div>
+  <div class="body">
+    <div class="meta"><span class="idx">H2H / ${c.slug}</span><span class="diff">${diffWord[c.d]} <span class="pips">${[1,2,3,4,5].map(n=>`<i class="${n<=c.d?'on':''}"></i>`).join('')}</span> ${c.d}/5</span></div>
+    <h3>${esc(c.title)}</h3>
+    <p class="pitch">${esc(c.pitch)}</p>
+    <div class="tags">${c.tags.map(t=>`<span>${esc(t)}</span>`).join('')}</div>
+    <div class="wow"><b>The wow moment</b>${esc(c.wow)}</div>
+    <div class="h2h-links" id="h2hLinks">${H2H_ORDER.map(linkHTML).join('')}</div>
+    <div class="pbox"><div class="pbar"><span>Prompt<small>${fullPrompt(c).split(/\s+/).length} words</small></span><button class="btn copy" type="button" data-copy="${c.slug}">${ICON_COPY}<span>Copy prompt</span></button></div>
+      <div class="prompt"><p data-p="${c.slug}">${promptHTML(c)}</p></div></div>
+    <div class="foot"><span class="slug">Est. Kimi cost <b>${c.cost}</b> · <span class="outp" data-slug="${c.slug}">${c.slug}/${MODEL}/</span></span><button class="btn pick" type="button" data-pick="${c.slug}">Pick this (optional)</button></div>
+  </div></article>`;
+}
+
+/* ---------- comparison ---------- */
+$('#vs').innerHTML = H2H_ORDER.map(id=>{ const m=MODELS.find(x=>x.id===id), b=BUILDS[id];
+  return `<div class="mp" ><div class="mp-h"><div><b>${m.name}</b><code>rocket-launch/${m.id}/index.html</code></div></div>${linkHTML(m.id)}
+  <dl><dt>Harness</dt><dd>${m.harness}</dd><dt>Cost</dt><dd>${b.cost??'-'}</dd><dt>Wall-clock</dt><dd>${b.time??'-'}</dd><dt>Turns</dt><dd>${b.turns??'-'}</dd><dt>File size</dt><dd>${b.size??'-'}</dd></dl></div>`; }).join('');
+const order = H2H_ORDER.map(id=>MODELS.find(x=>x.id===id));
+const opt = (id,i) => `<select data-m="${id}" data-r="${i}" aria-label="${RUBRIC[i].h} score for ${id}"><option value="">-</option>${[1,2,3,4,5].map(v=>`<option${SCORES[id][RUBRIC[i].h]==v?' selected':''}>${v}</option>`).join('')}</select>`;
+$('#scoreT').innerHTML = `<thead><tr><th>Rubric</th><th class="w">Weight</th>${order.map(m=>`<th>${m.name}</th>`).join('')}</tr></thead>
+  <tbody>${RUBRIC.map((r,i)=>`<tr><td>${r.h}</td><td class="w">${r.w}%</td>${order.map(m=>`<td>${opt(m.id,i)}</td>`).join('')}</tr>`).join('')}</tbody>
+  <tfoot><tr><td>Total</td><td class="w">/ 5.0</td>${order.map(m=>`<td data-total="${m.id}">-</td>`).join('')}</tr></tfoot>`;
+function totals(){ const out={}; order.forEach(m=>{ let sum=0, wsum=0; RUBRIC.forEach((r,i)=>{ const v=+$(`select[data-m="${m.id}"][data-r="${i}"]`).value; if(v){ sum+=v*r.w; wsum+=r.w; } }); out[m.id]= wsum? +(sum/wsum).toFixed(2) : null; });
+  const vals=Object.values(out).filter(v=>v!=null), best=Math.max(...vals);
+  order.forEach(m=>{ const td=$(`[data-total="${m.id}"]`); td.textContent = out[m.id]==null?'-':out[m.id].toFixed(2); td.classList.toggle('lead', vals.length>1 && out[m.id]===best); }); return out; }
+$('#scoreT').addEventListener('change', totals); totals();
+$('#sendScores').onclick = () => { if (!api()) return toast('Open this page through asklog to send scores.');
+  const t=totals(), detail={}; order.forEach(m=>{ detail[m.id]={}; RUBRIC.forEach((r,i)=>{ detail[m.id][r.h]= +$(`select[data-m="${m.id}"][data-r="${i}"]`).value || null; }); });
+  api().queuePrompt(`Rocket launcher scores: ${order.map(m=>`${m.name} ${t[m.id]??'-'}`).join(', ')}`, { queueKey:'score-rocket-launch', tag:'score', data:{ task:'rocket-launch', totals:t, scores:detail }, send:true });
+  toast('Scores sent.'); };
+
+/* ---------- model toggle ---------- */
+function setModel(id){ MODEL=id; [...$('#seg').children].forEach(b=>b.classList.toggle('on', b.dataset.m===id));
+  $('#outPath').textContent = `<task>/${id}/index.html`;
+  document.querySelectorAll('[data-p]').forEach(p=>{ const c=ALL.find(x=>x.slug===p.dataset.p); p.innerHTML=promptHTML(c); });
+  document.querySelectorAll('.outp').forEach(o=>o.textContent = `${o.dataset.slug}/${id}/`); }
+$('#seg').innerHTML = MODELS.map(m=>`<button type="button" data-m="${m.id}">${m.name}</button>`).join('');
+$('#seg').addEventListener('click', e=>{ const b=e.target.closest('[data-m]'); if(b) setModel(b.dataset.m); });
+setModel(MODEL);
 
 /* ---------- picking ---------- */
 const picked = new Set();
 const api = () => window.asklogPages;
 function setPick(slug, on){
-  const c = CH.find(x=>x.slug===slug), card = $('#c-'+slug);
+  const c = ALL.find(x=>x.slug===slug), card = $('#c-'+slug);
   if (!api()) { toast('Open this page through asklog to send picks.'); return; }
   if (on) picked.add(slug); else picked.delete(slug);
   card.classList.toggle('picked', on);
@@ -511,7 +642,7 @@ function renderTray(){
 document.addEventListener('click', e=>{
   const p = e.target.closest('[data-pick]'); if (p) { const s=p.dataset.pick; setPick(s, !picked.has(s)); return; }
   const cp = e.target.closest('[data-copy]');
-  if (cp) { const c=CH.find(x=>x.slug===cp.dataset.copy);
+  if (cp) { const c=ALL.find(x=>x.slug===cp.dataset.copy);
     copyText(fullPrompt(c)).then(ok=>{ if(!ok) return toast('Copy failed: select the prompt text and copy it by hand.');
       cp.classList.add('done'); cp.innerHTML=ICON_OK+'<span>Copied</span>'; clearTimeout(cp._t);
       cp._t=setTimeout(()=>{ cp.classList.remove('done'); cp.innerHTML=ICON_COPY+'<span>Copy prompt</span>'; },2000);
@@ -793,6 +924,50 @@ const rand = (a,b)=>a+Math.random()*(b-a);
     dots.forEach((d,j)=>d.classList.toggle('on',j===i)); btn.textContent=s.btn; chips.forEach((c,j)=>c.classList.toggle('on', i>=1 && (j===0||j===2) && i<3)); }
   go(0);
   loop(el,(t)=>{ if(t>nextT){ let n=cur+dir; if(n>=steps.length){dir=-1;n=cur-1;} if(n<0){dir=1;n=1;} go(n); nextT=t+2.2; } });
+})();
+
+/* H2H rocket */
+(() => {
+  const el=T('rocket-launch'); el.innerHTML=`<canvas></canvas><div class="rk-count"></div><span class="hint">T-MINUS · LIVE TEASER</span><span class="label">canvas particles</span>`;
+  const cv=el.querySelector('canvas'); sizer(cv); const x=cv.getContext('2d'); const cnt=el.querySelector('.rk-count');
+  const stars=Array.from({length:120},()=>({x:Math.random(),y:Math.random(),r:Math.random()*1.3+.3}));
+  let P=[], S=[], last=-1;
+  loop(el,(t,dt)=>{
+    const W=cv.cw,H=cv.ch,d=cv.d; if(!W) return;
+    const cyc=11, k=t%cyc; if(k<last){P=[];S=[];} last=k;
+    const ign=3, tt=Math.max(0,k-ign), alt=tt*tt*28, shake=k>ign?Math.max(0,8-tt*1.2):0;
+    const n=Math.ceil(ign-k); cnt.textContent = k<ign ? n : (k<ign+.7?'IGNITION':''); cnt.style.opacity = k<ign ? (1-(k%1))*.9 : (k<ign+.7?1-(k-ign)/.7:0); cnt.style.fontSize = k<ign?'22cqw':'9cqw';
+    const sp=Math.min(1,alt/2600);
+    x.setTransform(d,0,0,d,0,0);
+    const g=x.createLinearGradient(0,0,0,H); const mix=(a,b,u)=>a.map((v,i)=>Math.round(v+(b[i]-v)*u));
+    const top=mix([255,140,90],[4,4,14],Math.min(1,sp*1.6)), mid=mix([120,70,140],[8,8,28],sp), bot=mix([40,26,60],[10,12,40],sp);
+    g.addColorStop(0,`rgb(${mix(top,[2,2,8],sp)})`); g.addColorStop(.6,`rgb(${mid})`); g.addColorStop(1,`rgb(${bot})`); x.fillStyle=g; x.fillRect(0,0,W,H);
+    x.fillStyle='#fff'; stars.forEach(s=>{ x.globalAlpha=Math.min(1,sp*1.4)*(.5+.5*Math.sin(t*3+s.x*40)); x.beginPath(); x.arc(s.x*W,s.y*H*.9,s.r,0,7); x.fill(); }); x.globalAlpha=1;
+    x.save(); x.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
+    const sc=Math.max(1,Math.min(2.4,H/300)), groundY=H*.86+alt*.6;
+    if(groundY<H+40){ x.fillStyle='#120b16'; x.beginPath(); x.moveTo(0,groundY); for(let i=0;i<=10;i++) x.lineTo(i/10*W, groundY-8-((i*37)%23)); x.lineTo(W,H+60); x.lineTo(0,H+60); x.fill();
+      x.save(); x.translate(W*.5,groundY); x.scale(sc,sc);
+      x.fillStyle='#1c1220'; x.fillRect(-60,-6,120,10);
+      x.fillStyle='#2a1d2e'; x.fillRect(26,-120,8,116); for(let i=0;i<6;i++) x.fillRect(22,-118+i*20,16,2); x.restore(); }
+    for(let i=0;i<3;i++){ const cy=H*(.25+i*.22)+alt*(.4+i*.25)%(H*1.6)-H*.2; x.fillStyle=`rgba(255,220,230,${.08*(1-sp)})`; x.beginPath(); x.ellipse(W*(.2+i*.3),cy,W*.22,14,0,0,7); x.fill(); }
+    const rx=W*.5, ry=Math.max(H*.42, groundY-6*sc-alt*.4);
+    if(k>ign-.6){ const th=k>ign?1:.25; for(let i=0;i<(k>ign?6:1);i++) S.push({x:rx+rand(-8,8),y:groundY>H? H+20 : groundY-8,vx:rand(-1,1)*(k>ign?160:30),vy:rand(-30,-5),r:rand(8,16),l:1});
+      for(let i=0;i<(k>ign?10:0);i++) P.push({x:rx+rand(-4,4)*sc,y:ry+6*sc,vx:rand(-30,30)*sc,vy:rand(160,320)*th*sc,l:1}); }
+    S.forEach(s=>{ s.x+=s.vx*dt; s.y+=s.vy*dt; s.vx*=.985; s.r+=dt*26; s.l-=dt*.32; }); S=S.filter(s=>s.l>0); if(S.length>260) S.splice(0,S.length-260);
+    S.forEach(s=>{ x.fillStyle=`rgba(200,185,200,${s.l*.32})`; x.beginPath(); x.arc(s.x,s.y,s.r,0,7); x.fill(); });
+    x.globalCompositeOperation='lighter';
+    P.forEach(p=>{ p.x+=p.vx*dt; p.y+=p.vy*dt; p.l-=dt*2.6; }); P=P.filter(p=>p.l>0);
+    P.forEach(p=>{ x.fillStyle=`rgba(255,${Math.round(120+p.l*120)},${Math.round(40+p.l*60)},${p.l*.5})`; x.beginPath(); x.arc(p.x,p.y,(3+(1-p.l)*7)*sc,0,7); x.fill(); });
+    x.save(); x.translate(rx,ry); x.scale(sc,sc);
+    if(k>ign){ const fl=36+Math.random()*12; const fg=x.createLinearGradient(0,6,0,6+fl); fg.addColorStop(0,'rgba(255,255,230,1)'); fg.addColorStop(.4,'rgba(255,170,60,.9)'); fg.addColorStop(1,'rgba(255,60,20,0)'); x.fillStyle=fg; x.beginPath(); x.moveTo(-6,6); x.quadraticCurveTo(0,6+fl*1.3,6,6); x.fill(); }
+    x.globalCompositeOperation='source-over';
+    x.fillStyle='#ecebf2'; x.beginPath(); x.moveTo(-7,6); x.lineTo(-7,-44); x.quadraticCurveTo(0,-66,7,-44); x.lineTo(7,6); x.fill();
+    x.fillStyle='#ff6a3d'; x.fillRect(-7,-18,14,3); x.fillStyle='#1c1424'; x.beginPath(); x.moveTo(-7,6); x.lineTo(-13,10); x.lineTo(-7,-6); x.fill(); x.beginPath(); x.moveTo(7,6); x.lineTo(13,10); x.lineTo(7,-6); x.fill();
+    x.restore();
+    x.restore();
+    x.fillStyle='rgba(255,255,255,.85)'; x.font=`600 11px JetBrains Mono,monospace`; x.textAlign='right';
+    x.fillText(`ALT ${(alt/10).toFixed(1)} km`, W-16, 26); x.fillText(`T${k<ign?'-':'+'}${Math.abs(k-ign).toFixed(1)}s`, W-16, 42);
+  });
 })();
 
 if (reduce) { for(const l of loops) for(let i=0;i<40;i++) l.fn(i/30,1/30); }
