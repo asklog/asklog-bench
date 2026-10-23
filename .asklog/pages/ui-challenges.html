@@ -253,7 +253,7 @@ footer{margin-top:72px;color:var(--dim);font:500 12px/1.6 var(--mono)}
 
 /* model toggle */
 .seg{display:inline-flex;gap:4px;padding:4px;border-radius:14px;border:1px solid var(--line2);background:rgba(255,255,255,.03)}
-.seg button{appearance:none;border:0;cursor:pointer;padding:9px 14px;border-radius:10px;background:transparent;color:var(--mut);font:600 13px/1 var(--mono);transition:background .2s,color .2s}
+.seg button{white-space:nowrap;appearance:none;border:0;cursor:pointer;padding:9px 14px;border-radius:10px;background:transparent;color:var(--mut);font:600 13px/1 var(--mono);transition:background .2s,color .2s}
 .seg button.on{background:var(--fg);color:#08080a}
 .outrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:26px;font:500 13px/1.4 var(--mono);color:var(--mut)}
 .outrow code{color:var(--fg)}
@@ -296,6 +296,8 @@ footer{margin-top:72px;color:var(--dim);font:500 12px/1.6 var(--mono)}
 }
 @media (max-width:640px){
   .vs{grid-template-columns:1fr}
+  .seg{width:100%}
+  .seg button{flex:1;padding:9px 6px;font-size:12px}
   .score th,.score td{padding:10px 8px}
   .score td.w{display:none}
   .score select{padding:8px 20px 8px 8px;background-position:calc(100% - 10px) 50%,calc(100% - 5px) 50%}
