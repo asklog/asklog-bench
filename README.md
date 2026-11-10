@@ -38,9 +38,14 @@ Full prompt: [`rocket-launch/PROMPT.md`](rocket-launch/PROMPT.md).
 | GPT-6 Astra | Codex | xhigh | 58.7 KB | ~10 min | - | [open](https://asklog.github.io/asklog-bench/rocket-launch/gpt-6-astra/) · [source](rocket-launch/gpt-6-astra/index.html) |
 | Kimi K3.1 Pro | OpenCode via OpenRouter | default | 92.6 KB | ~23 min | $1.57 | [open](https://asklog.github.io/asklog-bench/rocket-launch/kimi-k3.1-pro/) · [source](rocket-launch/kimi-k3.1-pro/index.html) |
 | Claude Opus 5.5 | Claude Code | xhigh | 119.6 KB | ~43 min | - | [open](https://asklog.github.io/asklog-bench/rocket-launch/opus-5.5/) · [source](rocket-launch/opus-5.5/index.html) |
+| Claude Fable 5.2 | Claude Code | xhigh | 109.9 KB | ~55 min\* | - | [open](https://asklog.github.io/asklog-bench/rocket-launch/fable-5.2/) · [source](rocket-launch/fable-5.2/index.html) |
 
 "Time to file" is wall-clock time from sending the prompt to the finished `index.html`. Cost is
-listed only where it was metered per run (OpenRouter); the other two ran on subscription plans.
+listed only where it was metered per run (OpenRouter); the others ran on subscription plans.
+
+\* Fable 5.2 wrote the file, then kept going past the prompt and started testing it in a headless
+browser. The operator stopped it about 3 minutes later; the build is committed exactly as it
+wrote it.
 
 ## Run locally
 
@@ -79,6 +84,12 @@ prompt() { sed -n '/^```text$/,/^```$/{//!p;}' rocket-launch/PROMPT.md | sed "s/
 
 ```sh
 claude --model claude-opus-5-5 --effort xhigh "$(prompt opus-5.5)"
+```
+
+**Claude Fable 5.2** in Claude Code (subagents disabled so the run stays one shot):
+
+```sh
+claude --model claude-fable-5-2 --effort xhigh --disallowedTools Agent "$(prompt fable-5.2)"
 ```
 
 **GPT-6 Astra** in Codex:

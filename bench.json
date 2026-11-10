@@ -35,6 +35,16 @@
           "bytes": 58717,
           "minutes": 10,
           "cost": null
+        },
+        {
+          "model": "Claude Fable 5.2",
+          "folder": "fable-5.2",
+          "harness": "Claude Code",
+          "effort": "xhigh",
+          "bytes": 109910,
+          "minutes": 55,
+          "cost": null,
+          "note": "Kept self-testing with a headless browser after writing the file; stopped by the operator about 3 minutes later. Build committed as written."
         }
       ]
     }
